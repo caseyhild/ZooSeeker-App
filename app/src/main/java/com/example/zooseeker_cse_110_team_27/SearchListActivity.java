@@ -5,13 +5,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class SearchListActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
-    private EditText searchBarText;
+    private SearchView searchBarText;
     private SearchListViewModel viewModel;
     private Button addExhibitButton;
     @Override
@@ -36,8 +37,8 @@ public class SearchListActivity extends AppCompatActivity {
     }
 
     private void onAddSearchClicked(View view) {
-        String text = searchBarText.getText().toString();
-        searchBarText.setText("");
+        String text = searchBarText.getQuery().toString();
+        searchBarText.setQuery("", false);
         viewModel.createExhibit(text);
     }
 

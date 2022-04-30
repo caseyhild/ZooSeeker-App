@@ -18,16 +18,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_exhibit_btn" />
 
-    <EditText
+    <androidx.appcompat.widget.SearchView
         android:id="@+id/search_bar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="19dp"
-        android:hint="Search..."
+        android:hint="@string/search_exhibits"
         android:inputType="text"
-        android:maxLines="1"
-        android:text=""
         app:layout_constraintBottom_toBottomOf="@+id/add_exhibit_btn"
         app:layout_constraintEnd_toStartOf="@+id/add_exhibit_btn"
         app:layout_constraintStart_toStartOf="parent"
