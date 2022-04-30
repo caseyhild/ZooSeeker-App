@@ -12,7 +12,10 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 @Entity(tableName = "search_list_items")
 public class Exhibit {
 
@@ -31,6 +34,7 @@ public class Exhibit {
         this.tags = tags;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Exhibit{" +
@@ -53,5 +57,14 @@ public class Exhibit {
             e.printStackTrace();
             return Collections.emptyList();
         }
+    }
+    public static Map<String, String> getSearchMap(List<Exhibit> exhibits){
+        Map<String, String> exhibitTagMap = new HashMap<>();
+        for (Exhibit exhibit: exhibits) {
+            for (String tag: exhibit.tags ) {
+                exhibitTagMap.put(tag, exhibit.name);
+            }
+        }
+        return exhibitTagMap;
     }
 }
