@@ -26,7 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
  * @see <a href="http://d.android.com/tools/testing">Testing documentation</a>
  */
 @RunWith(AndroidJUnit4.class)
-public class SearchStoryTest {
+public class UnitTests {
     @Rule
     public ActivityScenarioRule<MainActivity> scenarioRule = new ActivityScenarioRule<>(MainActivity.class);
 
