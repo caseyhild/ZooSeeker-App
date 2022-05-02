@@ -34,7 +34,6 @@ public class SearchListActivity extends AppCompatActivity {
             doMySearch(query);
         }
 
-
         SearchListAdapter adapter = new SearchListAdapter();
         adapter.setOnDeleteButtonClicked(viewModel::deleteSearchExhibit);
         adapter.setHasStableIds(true);
