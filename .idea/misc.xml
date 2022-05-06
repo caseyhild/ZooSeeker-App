@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/ITSloaner/StudioProjects/zooseeker-cse-110-team-27/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Users/ITSloaner/StudioProjects/zooseeker-cse-110-team-27/app/src/main/res/layout/search_activity.xml" value="0.128" />
+        <entry key="..\:/Users/ITSloaner/StudioProjects/zooseeker-cse-110-team-27/app/src/main/res/layout/search_item.xml" value="0.144" />
+        <entry key="..\:/Users/Jake the Snake/StudioProjects/zooseeker-cse-110-team-27/app/src/main/res/layout/search_activity.xml" value="0.3333333333333333" />
+        <entry key="..\:/Users/Jake the Snake/StudioProjects/zooseeker-cse-110-team-27/app/src/main/res/layout/search_item.xml" value="0.575" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
