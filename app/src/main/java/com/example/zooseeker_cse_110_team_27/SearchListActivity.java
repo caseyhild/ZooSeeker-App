@@ -20,6 +20,7 @@ public class SearchListActivity extends AppCompatActivity {
     private SearchView searchView;
     private SearchListViewModel viewModel;
     private Button addExhibitButton;
+    private Button planRouteButton;
     private List<Exhibit> exhibits;
     private Map<String,String> exhibitTagMap;
     @Override
@@ -63,12 +64,20 @@ public class SearchListActivity extends AppCompatActivity {
         this.addExhibitButton = this.findViewById(R.id.add_exhibit_btn);
         addExhibitButton.setOnClickListener(this::onAddSearchClicked);
 
+        this.planRouteButton = this.findViewById(R.id.plan_route_btn);
+        planRouteButton.setOnClickListener(this::onPlanClicked);
+
     }
 
     private void doMySearch(String query) {
         //TODO
         //use query to check the exhibit tag map for matches, tell list_view
         //to display matches
+    }
+
+    private void onPlanClicked(View view) {
+        Intent intent = new Intent(SearchListActivity.this, PlanRouteActivity.class);
+        startActivity(intent);
     }
 
 
