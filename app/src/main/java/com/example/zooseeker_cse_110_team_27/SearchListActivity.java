@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,7 +23,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class SearchListActivity extends AppCompatActivity {
+public class SearchListActivity extends AppCompatActivity implements SearchListAdapter.ItemCallback{
     public RecyclerView recyclerView;
     private SearchView searchView;
     private SearchListViewModel viewModel;
@@ -30,10 +31,9 @@ public class SearchListActivity extends AppCompatActivity {
     private Button planRouteButton;
     private TextView deleteButton;
     private List<Exhibit> exhibits;
+    private SearchListAdapter adapter;
     private TextView numExhibits;
     private Map<String,String> exhibitTagMap;
-    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
-    private Future<Void> future;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -46,7 +46,7 @@ public class SearchListActivity extends AppCompatActivity {
             doMySearch(query);
         }
 
-        SearchListAdapter adapter = new SearchListAdapter();
+        adapter = new SearchListAdapter(this);
         adapter.setOnDeleteButtonClicked(viewModel::deleteSearchExhibit);
         adapter.setHasStableIds(true);
         viewModel.getSearchListItems().observe(this, adapter::setSearchListItems);
@@ -79,6 +79,7 @@ public class SearchListActivity extends AppCompatActivity {
         planRouteButton.setOnClickListener(this::onPlanClicked);
 
         this.numExhibits = this.findViewById(R.id.num_exhibits_view);
+        updateTextView();
     }
 
     private void doMySearch(String query) {
@@ -96,16 +97,18 @@ public class SearchListActivity extends AppCompatActivity {
 
     private void onAddSearchClicked(View view) {
         String text = searchView.getQuery().toString();
+        if(text.length() == 0) {
+            return;
+        }
         searchView.setQuery("", false);
         viewModel.createExhibit(text);
-        numExhibits.setText(String.valueOf(viewModel.getNumExhibits()));
+        updateTextView();
     }
 
-    private void onDeleteClicked(View view) {
-        numExhibits.setText(String.valueOf(viewModel.getNumExhibits()));
+    @Override
+    public void updateTextView() {
+        numExhibits.setText(adapter.getItemCount() + "");
     }
-
-
 }
 
 

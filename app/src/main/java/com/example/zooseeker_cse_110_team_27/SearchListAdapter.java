@@ -12,12 +12,22 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.ViewHolder> {
+    interface ItemCallback {
+        void updateTextView();
+    }
+
+    private ItemCallback listener;
     private List<SearchListItem> searchListItems = Collections.emptyList();
     private Consumer<SearchListItem> onDeleteButtonClicked;
-    
+
+    public SearchListAdapter(ItemCallback listener) {
+        this.listener = listener;
+    }
+
     public void setSearchListItems(List<SearchListItem> searchListItems) {
         this.searchListItems.clear();
         this.searchListItems = searchListItems;
+        listener.updateTextView();
         notifyDataSetChanged();
     }
 
@@ -64,6 +74,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
                     return;
                 }
                 onDeleteButtonClicked.accept(searchListItem);
+                listener.updateTextView();
             });
 
         }
