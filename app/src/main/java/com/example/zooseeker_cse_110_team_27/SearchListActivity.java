@@ -3,6 +3,7 @@ package com.example.zooseeker_cse_110_team_27;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -17,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -30,7 +32,9 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     private Button addExhibitButton;
     private Button planRouteButton;
     private TextView deleteButton;
-    private List<Exhibit> exhibits;
+    private ArrayList<Exhibit> exhibits;
+    private List<SearchListItem> exhibitsinList;
+    private Map<String, String> exhibitIdMap;
     private SearchListAdapter adapter;
     private TextView numExhibits;
     private Map<String,String> exhibitTagMap;
@@ -50,12 +54,14 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         adapter.setOnDeleteButtonClicked(viewModel::deleteSearchExhibit);
         adapter.setHasStableIds(true);
         viewModel.getSearchListItems().observe(this, adapter::setSearchListItems);
-
         recyclerView = findViewById(R.id.search_list_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        exhibits = Exhibit.loadJSONForSearching(this, "sample_node_info.json");
+        exhibits = (ArrayList<Exhibit>) Exhibit.loadJSONForSearching(this, "sample_node_info.json");
         exhibitTagMap = Exhibit.getSearchMap(exhibits);
+        exhibitIdMap = Exhibit.getIdMap(exhibits);
+        System.out.println(exhibitIdMap.toString());
+
         this.searchView = this.findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(
                 new SearchView.OnQueryTextListener(){
@@ -79,6 +85,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         planRouteButton.setOnClickListener(this::onPlanClicked);
 
         this.numExhibits = this.findViewById(R.id.num_exhibits_view);
+
         updateTextView();
     }
 
@@ -90,6 +97,12 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
 
     private void onPlanClicked(View view) {
         Intent intent = new Intent(SearchListActivity.this, PlanRouteActivity.class);
+        ArrayList<String> passExhibitNames = new ArrayList<>();
+        for (SearchListItem e : exhibitsinList) {
+            String id = exhibitIdMap.get(e.exhibitName);
+            passExhibitNames.add(id);
+        }
+        intent.putExtra("key", passExhibitNames);
         startActivity(intent);
     }
 
@@ -97,17 +110,26 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
 
     private void onAddSearchClicked(View view) {
         String text = searchView.getQuery().toString();
-        if(text.length() == 0) {
+        System.out.println(exhibitTagMap.get(text));
+        System.out.println(exhibitsinList.toString());
+        if(text.length() == 0 || exhibitsinList.contains(exhibitTagMap.get(text))) {
             return;
         }
-        searchView.setQuery("", false);
-        viewModel.createExhibit(text);
-        updateTextView();
+
+        if (exhibitTagMap.containsKey(text)) {
+            searchView.setQuery("", false);
+            viewModel.createExhibit(exhibitTagMap.get(text));
+            updateTextView();
+        }
     }
 
     @Override
     public void updateTextView() {
         numExhibits.setText(adapter.getItemCount() + "");
+    }
+
+    public void getExhibitsinList(List<SearchListItem> exhibitList) {
+        exhibitsinList = exhibitList;
     }
 }
 

@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.ViewHolder> {
     interface ItemCallback {
         void updateTextView();
+        void getExhibitsinList(List<SearchListItem> searchListItems);
     }
 
     private ItemCallback listener;
@@ -28,6 +29,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         this.searchListItems.clear();
         this.searchListItems = searchListItems;
         listener.updateTextView();
+        listener.getExhibitsinList(searchListItems);
         notifyDataSetChanged();
     }
 

@@ -35,7 +35,8 @@ public class PlanRouteActivity extends AppCompatActivity {
 
         // "source" and "sink" are graph terms for the start and end
         String start = "entrance_exit_gate";
-        goals = new ArrayList<>(Arrays.asList("elephant_odyssey", "gorillas", "lions"));
+        goals = (ArrayList<String>) getIntent().getSerializableExtra("key");
+        System.out.println(goals.toString());
 
         tv = findViewById(R.id.directions_textView);
 

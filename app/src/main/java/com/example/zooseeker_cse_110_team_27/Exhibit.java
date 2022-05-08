@@ -58,6 +58,16 @@ public class Exhibit {
             return Collections.emptyList();
         }
     }
+
+    public static Map<String, String> getIdMap(List<Exhibit> exhibits) {
+        Map<String, String> idMap = new HashMap<>();
+        for (Exhibit exhibit : exhibits) {
+            idMap.put(exhibit.name, exhibit.id);
+        }
+
+        return idMap;
+    }
+
     public static Map<String, String> getSearchMap(List<Exhibit> exhibits){
         Map<String, String> exhibitTagMap = new HashMap<>();
         for (Exhibit exhibit: exhibits) {
@@ -67,4 +77,5 @@ public class Exhibit {
         }
         return exhibitTagMap;
     }
+
 }
