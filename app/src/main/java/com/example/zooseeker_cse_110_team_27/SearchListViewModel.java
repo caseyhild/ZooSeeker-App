@@ -14,6 +14,7 @@ public class SearchListViewModel extends AndroidViewModel {
     private LiveData<List<SearchListItem>> searchListItems;
     private final SearchListItemDao searchListItemDao;
 
+
     public SearchListViewModel(@NonNull Application application) {
         super(application);
         Context context = getApplication().getApplicationContext();
@@ -44,7 +45,12 @@ public class SearchListViewModel extends AndroidViewModel {
     }
 
     public void deleteSearchExhibit(SearchListItem item) {
+
         searchListItemDao.delete(item);
+    }
+
+    public int getNumExhibits() {
+        return searchListItemDao.getAll().size();
     }
 }
 

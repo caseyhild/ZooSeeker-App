@@ -3,25 +3,36 @@ package com.example.zooseeker_cse_110_team_27;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-public class SearchListActivity extends AppCompatActivity {
+public class SearchListActivity extends AppCompatActivity implements SearchListAdapter.ItemCallback{
     public RecyclerView recyclerView;
     private SearchView searchView;
     private SearchListViewModel viewModel;
     private Button addExhibitButton;
     private Button planRouteButton;
+    private TextView deleteButton;
     private List<Exhibit> exhibits;
+    private SearchListAdapter adapter;
+    private TextView numExhibits;
     private Map<String,String> exhibitTagMap;
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -35,7 +46,7 @@ public class SearchListActivity extends AppCompatActivity {
             doMySearch(query);
         }
 
-        SearchListAdapter adapter = new SearchListAdapter();
+        adapter = new SearchListAdapter(this);
         adapter.setOnDeleteButtonClicked(viewModel::deleteSearchExhibit);
         adapter.setHasStableIds(true);
         viewModel.getSearchListItems().observe(this, adapter::setSearchListItems);
@@ -67,6 +78,8 @@ public class SearchListActivity extends AppCompatActivity {
         this.planRouteButton = this.findViewById(R.id.plan_route_btn);
         planRouteButton.setOnClickListener(this::onPlanClicked);
 
+        this.numExhibits = this.findViewById(R.id.num_exhibits_view);
+        updateTextView();
     }
 
     private void doMySearch(String query) {
@@ -84,11 +97,18 @@ public class SearchListActivity extends AppCompatActivity {
 
     private void onAddSearchClicked(View view) {
         String text = searchView.getQuery().toString();
+        if(text.length() == 0) {
+            return;
+        }
         searchView.setQuery("", false);
         viewModel.createExhibit(text);
+        updateTextView();
     }
 
-
+    @Override
+    public void updateTextView() {
+        numExhibits.setText(adapter.getItemCount() + "");
+    }
 }
 
 

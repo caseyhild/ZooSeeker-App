@@ -21,6 +21,9 @@ public interface SearchListItemDao {
     @Query("SELECT * FROM `Search_list_items` ORDER BY `order`")
     List<SearchListItem> getAll();
 
+    @Query("SELECT COUNT(*) FROM `search_list_items`")
+    LiveData<Integer> getDataCount();
+
     @Update
     int update(SearchListItem searchListItem);
 

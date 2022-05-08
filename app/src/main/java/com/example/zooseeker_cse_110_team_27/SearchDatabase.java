@@ -36,6 +36,7 @@ public abstract class SearchDatabase extends RoomDatabase {
                             List<SearchListItem> searches = SearchListItem
                                     .loadJSON(context,"demo_searches.json");
                             getSingleton(context).searchListItemDao().insertAll(searches);
+
                         });
                     }
                 })
