@@ -3,8 +3,12 @@ package com.example.zooseeker_cse_110_team_27;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
@@ -14,6 +18,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class SearchListActivity extends AppCompatActivity {
     public RecyclerView recyclerView;
@@ -21,8 +28,12 @@ public class SearchListActivity extends AppCompatActivity {
     private SearchListViewModel viewModel;
     private Button addExhibitButton;
     private Button planRouteButton;
+    private TextView deleteButton;
     private List<Exhibit> exhibits;
+    private TextView numExhibits;
     private Map<String,String> exhibitTagMap;
+    private ExecutorService backgroundThreadExecutor = Executors.newSingleThreadExecutor();
+    private Future<Void> future;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -67,6 +78,7 @@ public class SearchListActivity extends AppCompatActivity {
         this.planRouteButton = this.findViewById(R.id.plan_route_btn);
         planRouteButton.setOnClickListener(this::onPlanClicked);
 
+        this.numExhibits = this.findViewById(R.id.num_exhibits_view);
     }
 
     private void doMySearch(String query) {
@@ -86,6 +98,11 @@ public class SearchListActivity extends AppCompatActivity {
         String text = searchView.getQuery().toString();
         searchView.setQuery("", false);
         viewModel.createExhibit(text);
+        numExhibits.setText(String.valueOf(viewModel.getNumExhibits()));
+    }
+
+    private void onDeleteClicked(View view) {
+        numExhibits.setText(String.valueOf(viewModel.getNumExhibits()));
     }
 
 

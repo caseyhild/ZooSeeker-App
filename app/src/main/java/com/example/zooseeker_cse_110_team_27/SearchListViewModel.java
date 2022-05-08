@@ -46,6 +46,10 @@ public class SearchListViewModel extends AndroidViewModel {
     public void deleteSearchExhibit(SearchListItem item) {
         searchListItemDao.delete(item);
     }
+
+    public int getNumExhibits() {
+        return searchListItemDao.getAll().size();
+    }
 }
 
 
