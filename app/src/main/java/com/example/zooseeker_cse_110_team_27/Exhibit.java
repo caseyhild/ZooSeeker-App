@@ -19,8 +19,6 @@ import java.util.Map;
 @Entity(tableName = "search_list_items")
 public class Exhibit {
 
-
-
     @NonNull
     public String id;
     public String kind;
