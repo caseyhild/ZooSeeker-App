@@ -18,6 +18,7 @@ import android.view.ViewParent;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
+//import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
@@ -119,7 +120,7 @@ public class MainActivityTest {
                                 1),
                         isDisplayed()));
         materialTextView.perform(click());
-
+/*
         ViewInteraction materialTextView2 = onView(
                 allOf(withId(R.id.delete_btn), withText("X"),
                         childAtPosition(
@@ -139,6 +140,7 @@ public class MainActivityTest {
                                 1),
                         isDisplayed()));
         materialTextView3.perform(click());
+        */
     }
 
     private static Matcher<View> childAtPosition(
