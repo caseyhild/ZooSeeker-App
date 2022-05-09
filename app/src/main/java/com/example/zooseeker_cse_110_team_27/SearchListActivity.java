@@ -112,10 +112,11 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         String text = searchView.getQuery().toString();
         System.out.println(exhibitTagMap.get(text));
         System.out.println(exhibitsinList.toString());
-        if(text.length() == 0
-                || exhibitsinList.contains(exhibitTagMap.get(text))
-                || viewModel.getSearchListItems().getValue().contains(exhibitTagMap.get(text)))
+
+        if(text.length() == 0|| viewModel.getExhibitNames().contains(exhibitTagMap.get(text)))
         {return;}
+
+        System.out.println(viewModel.getSearchListItems().getValue());
 
         if (exhibitTagMap.containsKey(text)) {
             searchView.setQuery("", false);
