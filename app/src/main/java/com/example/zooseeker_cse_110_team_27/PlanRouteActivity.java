@@ -36,12 +36,11 @@ public class PlanRouteActivity extends AppCompatActivity {
         // "source" and "sink" are graph terms for the start and end
         String start = "entrance_exit_gate";
         goals = (ArrayList<String>) getIntent().getSerializableExtra("key");
-        System.out.println(goals.toString());
 
         tv = findViewById(R.id.directions_textView);
 
         nextBtn = findViewById(R.id.next_btn);
-        nextBtn.setOnClickListener(this::onNextCicked);
+        nextBtn.setOnClickListener(this::onNextClicked);
 
         // 1. Load the graph...
         String goal = "";
@@ -68,8 +67,6 @@ public class PlanRouteActivity extends AppCompatActivity {
             goals.remove(goal);
         }
 
-        System.out.println(shortPaths.toString());
-
         // 2. Load the information about our nodes and edges...
         vInfo = ZooData.loadVertexInfoJSON(this,"sample_node_info.json");
         eInfo = ZooData.loadEdgeInfoJSON(this,"sample_edge_info.json");
@@ -94,8 +91,17 @@ public class PlanRouteActivity extends AppCompatActivity {
         shortPaths.remove(0);
     }
 
-    private void onNextCicked(View view) {
+    private void onNextClicked(View view) {
         tv.setText("");
+
+        if (shortPaths.size() == 0) {
+            finish();
+            return;
+        }
+
+        if (shortPaths.size() == 1) {
+            nextBtn.setText("Finish");
+        }
 
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g,
                 shortPaths.get(0).get(0),
