@@ -13,12 +13,14 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -60,7 +62,6 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         exhibits = (ArrayList<Exhibit>) Exhibit.loadJSONForSearching(this, "sample_node_info.json");
         exhibitTagMap = Exhibit.getSearchMap(exhibits);
         exhibitIdMap = Exhibit.getIdMap(exhibits);
-        System.out.println(exhibitIdMap.toString());
 
         this.searchView = this.findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(
@@ -78,6 +79,8 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
                     }
                 }
         );
+
+
         this.addExhibitButton = this.findViewById(R.id.add_exhibit_btn);
         addExhibitButton.setOnClickListener(this::onAddSearchClicked);
 
@@ -87,6 +90,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         this.numExhibits = this.findViewById(R.id.num_exhibits_view);
 
         updateTextView();
+        populateDisplay();
     }
 
     private void doMySearch(String query) {
@@ -124,11 +128,24 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
 
     @Override
     public void updateTextView() {
-        numExhibits.setText(adapter.getItemCount() + "");
+        String update = adapter.getItemCount() + "";
+        numExhibits.setText(update);
     }
 
     public void getExhibitsinList(List<SearchListItem> exhibitList) {
         exhibitsinList = exhibitList;
+    }
+
+    public void populateDisplay() {
+        for(int i = 0; i < exhibits.size(); i++)
+        {
+            Exhibit e = exhibits.get(i);
+            List<String> list = viewModel.getNames();
+            if(!list.contains(e.name) && e.kind.equals("exhibit")) {
+                viewModel.createExhibit(e.name);
+            }
+        }
+        updateTextView();
     }
 }
 
