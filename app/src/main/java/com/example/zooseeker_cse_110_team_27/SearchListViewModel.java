@@ -1,12 +1,15 @@
 package com.example.zooseeker_cse_110_team_27;
 import android.app.Application;
 import android.content.Context;
+
+import java.util.ArrayList;
 import java.util.HashSet;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
 import java.util.List;
+import java.util.Set;
 
 public class SearchListViewModel extends AndroidViewModel {
 
@@ -21,7 +24,7 @@ public class SearchListViewModel extends AndroidViewModel {
         Context context = getApplication().getApplicationContext();
         SearchDatabase db = SearchDatabase.getSingleton(context);
         searchListItemDao = db.searchListItemDao();
-        exhibitNames = new HashSet<String>();
+        exhibitNames = new HashSet<>();
     }
 
     public LiveData<List<SearchListItem>> getSearchListItems() {
@@ -57,6 +60,17 @@ public class SearchListViewModel extends AndroidViewModel {
     }
 
     public HashSet<String> getExhibitNames(){ return exhibitNames; }
+
+    public List<String> getNames() {
+        List<String> list = new ArrayList<>();
+        for(SearchListItem s : searchListItemDao.getAll())
+        {
+            list.add(s.exhibitName);
+        }
+        return list;
+    }
+
+
 }
 
 
