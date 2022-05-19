@@ -75,7 +75,6 @@ public class PlanRouteActivity extends AppCompatActivity {
                 shortPaths.get(0).get(0),
                 shortPaths.get(0).get(1));
 
-
         tv.append("The shortest path from " + shortPaths.get(0).get(0) + " to " + shortPaths.get(0).get(1)
                 + " is: " + path.getWeight() + " meters.\n\n");
 
@@ -83,8 +82,8 @@ public class PlanRouteActivity extends AppCompatActivity {
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
 
             tv.append(i + ". Walk " + g.getEdgeWeight(e) + " meters along " + eInfo.get(e.getId()).street +
-                    " from " + vInfo.get(g.getEdgeSource(e).toString()).name + " to " +
-                    vInfo.get(g.getEdgeTarget(e).toString()).name + ".\n\n");
+                    " from " + vInfo.get(g.getEdgeSource(e)).name + " to " +
+                    vInfo.get(g.getEdgeTarget(e)).name + ".\n\n");
             i++;
         }
 
@@ -107,16 +106,28 @@ public class PlanRouteActivity extends AppCompatActivity {
                 shortPaths.get(0).get(0),
                 shortPaths.get(0).get(1));
 
-
-        tv.append("The shortest path from " + shortPaths.get(0).get(0) + " to " + shortPaths.get(0).get(1)
+        String start = vInfo.get(path.getStartVertex()).name;
+        String end = vInfo.get(path.getEndVertex()).name;
+        tv.append("The shortest path from " + start + " to " + end
                 + " is: " + path.getWeight() + " meters.\n\n");
 
         int i = 1;
+        String currExhibit = shortPaths.get(0).get(0);
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
+            String edgeSource = vInfo.get(g.getEdgeSource(e)).name;
+            String edgeTarget = vInfo.get(g.getEdgeTarget(e)).name;
 
             tv.append(i + ". Walk " + g.getEdgeWeight(e) + " meters along " + eInfo.get(e.getId()).street +
-                    " from " + vInfo.get(g.getEdgeSource(e).toString()).name + " to " +
-                    vInfo.get(g.getEdgeTarget(e).toString()).name + ".\n\n");
+                    " from "/* + vInfo.get(g.getEdgeSource(e)).name + " to " +
+                    vInfo.get(g.getEdgeTarget(e)).name + ".\n\n"*/);
+
+            if (currExhibit.equals(vInfo.get(g.getEdgeSource(e)).id)) {
+                tv.append(edgeSource + " to " + edgeTarget + ".\n\n");
+                currExhibit = vInfo.get(g.getEdgeTarget(e)).id;
+            } else {
+                tv.append(edgeTarget + " to " + edgeSource + ".\n\n");
+                currExhibit = vInfo.get(g.getEdgeSource(e)).id;
+            }
             i++;
         }
 
