@@ -41,7 +41,7 @@ public class PlanRouteActivity extends AppCompatActivity {
 
         // 1. Load the graph...
         String goal = "";
-        tv.setText("");
+        //tv.setText("");
         g = ZooData.loadZooGraphJSON(this,"sample_zoo_graph.json");
         // 2. Load the information about our nodes and edges...
         vInfo = ZooData.loadVertexInfoJSON(this,"sample_node_info.json");
@@ -61,16 +61,24 @@ public class PlanRouteActivity extends AppCompatActivity {
                 shortPaths.get(0).get(0),
                 shortPaths.get(0).get(1));
 
-
-        tv.append("The shortest path from " + shortPaths.get(0).get(0) + " to " + shortPaths.get(0).get(1)
-                + " is: " + path.getWeight() + " meters.\n\n");
+        tv.append("The shortest path from " + vInfo.get(path.getStartVertex()).name + " to "
+                + vInfo.get(path.getEndVertex()).name + " is: " + path.getWeight() + " meters.\n\n");
 
         int i = 1;
+        String currExhibit = shortPaths.get(0).get(0);
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
+            ZooData.VertexInfo edgeSource = vInfo.get(g.getEdgeSource(e));
+            ZooData.VertexInfo edgeTarget = vInfo.get(g.getEdgeTarget(e));
 
-            tv.append(i + ". Walk " + g.getEdgeWeight(e) + " meters along " + eInfo.get(e.getId()).street +
-                    " from " + vInfo.get(g.getEdgeSource(e).toString()).name + " to " +
-                    vInfo.get(g.getEdgeTarget(e).toString()).name + ".\n\n");
+            tv.append(i + ". Walk " + g.getEdgeWeight(e) + " meters along " + eInfo.get(e.getId()).street + " from ");
+
+            if (currExhibit.equals(edgeSource.id)) {
+                tv.append(edgeSource.name + " to " + edgeTarget.name + ".\n\n");
+                currExhibit = edgeTarget.id;
+            } else {
+                tv.append(edgeTarget.name + " to " + edgeSource.name + ".\n\n");
+                currExhibit = edgeSource.id;
+            }
             i++;
         }
 
