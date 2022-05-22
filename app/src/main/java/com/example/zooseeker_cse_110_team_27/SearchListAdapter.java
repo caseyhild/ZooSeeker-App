@@ -55,6 +55,17 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         return searchListItems.size();
     }
 
+    public int getSelected() {
+        int ctr = 0;
+        for(SearchListItem s : searchListItems)
+        {
+            if(s.selected == true) {
+                ctr++;
+            }
+        }
+        return ctr;
+    }
+
     @Override
     public long getItemId(int position) {
         return searchListItems.get(position).id;

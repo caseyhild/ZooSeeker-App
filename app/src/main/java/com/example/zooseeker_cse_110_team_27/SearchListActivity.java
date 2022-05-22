@@ -129,7 +129,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
 
     @Override
     public void updateTextView() {
-        String update = adapter.getItemCount() + "";
+        String update = adapter.getSelected() + "";
         numExhibits.setText(update);
     }
 
