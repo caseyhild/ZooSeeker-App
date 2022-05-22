@@ -47,20 +47,30 @@ public class PlanRouteActivity extends AppCompatActivity{
 
         shortPaths = new ArrayList<>();
 
+        //create all the goals along the path
         pr = new PlanRoute(this);
         pr.createGoals(goals, start, shortPaths);
+
+        //make it go back to the beginning when done
+        ArrayList<String> temp = new ArrayList<>();
+        temp.add(shortPaths.get(shortPaths.size() - 1).get(1));
+        temp.add("entrance_exit_gate");
+        shortPaths.add(temp);
 
         setShortestPath(shortPaths);
     }
 
     private void setShortestPath(ArrayList<ArrayList<String>> shortPaths) {
+        //set the textview back to empty
         tv.setText("");
 
+        //rewrite the textview to the shortest path
         tv.setText(pr.setShortestPath(shortPaths));
 
     }
 
     private void onCompactClicked(View view) {
+        //send data to the compactlistactivity to use the shortPaths
         Intent i = new Intent(this, CompactListActivity.class);
 
         i.putExtra("shortPaths", shortPaths);
@@ -69,15 +79,18 @@ public class PlanRouteActivity extends AppCompatActivity{
     }
 
     private void onNextClicked(View view) {
+        //when shortPaths doesnt have any more elements, finish the activity
         if (shortPaths.size() == 0) {
             finish();
             return;
         }
 
+        //if shortPaths has only 1 element then set the text of nextBtn to finish
         if (shortPaths.size() == 1) {
             nextBtn.setText("Finish");
         }
 
+        //otherwise we just change the textview of the activity to shortPaths
         setShortestPath(shortPaths);
     }
 

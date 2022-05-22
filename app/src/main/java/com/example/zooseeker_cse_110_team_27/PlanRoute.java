@@ -1,6 +1,7 @@
 package com.example.zooseeker_cse_110_team_27;
 
 import android.content.Context;
+import android.util.Log;
 
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
@@ -19,7 +20,10 @@ public class PlanRoute {
     private Context context;
 
     public PlanRoute(Context context) {
+        //get the context from the activity your using
         this.context = context;
+
+        //load the necessary data from JSON
         g = ZooData.loadZooGraphJSON(context,"sample_zoo_graph.json");
         vInfo = ZooData.loadVertexInfoJSON(context,"sample_node_info.json");
         eInfo = ZooData.loadEdgeInfoJSON(context,"sample_edge_info.json");
@@ -49,18 +53,25 @@ public class PlanRoute {
             goals.remove(goal);
         }
 
+
+        Log.d("TAG", shortPaths.toString());
     }
 
     String setCompactList(ArrayList<ArrayList<String>> shortPaths) {
+        String text = "";
+        int totalWeight = 0;
+        while (!shortPaths.isEmpty()) {
+            GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g,
+                    shortPaths.get(0).get(0),
+                    shortPaths.get(0).get(1));
 
-        GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g,
-                shortPaths.get(0).get(0),
-                shortPaths.get(0).get(1));
+            shortPaths.remove(0);
 
-        shortPaths.remove(0);
+            totalWeight += path.getWeight();
 
-        String text = (vInfo.get(path.getStartVertex()).name + " to "
-                + vInfo.get(path.getEndVertex()).name + " is: " + path.getWeight() + " meters.\n\n");
+            text += (vInfo.get(path.getStartVertex()).name + " to "
+                    + vInfo.get(path.getEndVertex()).name + " is: " + totalWeight + " meters.\n\n");
+        }
 
         return text;
     }
@@ -97,4 +108,5 @@ public class PlanRoute {
 
         return ap;
     }
+
 }
