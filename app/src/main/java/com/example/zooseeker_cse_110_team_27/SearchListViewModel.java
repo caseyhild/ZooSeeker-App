@@ -46,7 +46,7 @@ public class SearchListViewModel extends AndroidViewModel {
     public void createExhibit(String exhibitName) {
         int endOfListOrder = searchListItemDao.getOrderForAppend();
         exhibitNames.add(exhibitName);
-        SearchListItem newItem = new SearchListItem(exhibitName, endOfListOrder);
+        SearchListItem newItem = new SearchListItem(exhibitName, endOfListOrder, false);
         searchListItemDao.insert(newItem);
     }
 
@@ -70,7 +70,11 @@ public class SearchListViewModel extends AndroidViewModel {
         return list;
     }
 
-
+    public void toggleCompleted(SearchListItem searchListItem)
+    {
+        searchListItem.selected = !searchListItem.selected;
+        searchListItemDao.update(searchListItem);
+    }
 }
 
 
