@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CompactListActivity extends AppCompatActivity{
-    ArrayList<ArrayList<String>> shortGoals;
+    ArrayList<ArrayList<String>> shortPaths;
     TextView compactTv;
 
 
@@ -19,13 +19,16 @@ public class CompactListActivity extends AppCompatActivity{
         setContentView(R.layout.activity_compact_list);
 
         compactTv = findViewById(R.id.compactlist_tv);
-        shortGoals = (ArrayList<ArrayList<String>>) getIntent().getSerializableExtra("shortPaths");
+        shortPaths = (ArrayList<ArrayList<String>>) getIntent().getSerializableExtra("shortPaths");
 
         PlanRoute pr = new PlanRoute(this);
-        while(!shortGoals.isEmpty()) {
-            compactTv.append(pr.setCompactList(shortGoals));
-        }
 
+        //append to the textview with the shortest paths
+        if (shortPaths.size() == 0) {
+            compactTv.append("No more exhibits!");
+        }
+        else
+            compactTv.append(pr.setCompactList(shortPaths));
     }
 
 }
