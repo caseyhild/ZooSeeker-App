@@ -53,8 +53,9 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         }
 
         adapter = new SearchListAdapter(this);
-        adapter.setOnDeleteButtonClicked(viewModel::deleteSearchExhibit);
+        //adapter.setOnDeleteButtonClicked(viewModel::deleteSearchExhibit);
         adapter.setHasStableIds(true);
+        adapter.setOnCheckBoxClickedHandler(viewModel::toggleCompleted);
         viewModel.getSearchListItems().observe(this, adapter::setSearchListItems);
         recyclerView = findViewById(R.id.search_list_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));

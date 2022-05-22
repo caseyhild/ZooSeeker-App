@@ -20,10 +20,12 @@ public class SearchListItem {
     @NonNull
     public String exhibitName;
     public int order;
+    public boolean selected;
 
-    public SearchListItem(@NonNull String exhibitName, int order){
+    public SearchListItem(@NonNull String exhibitName, int order, boolean selected){
         this.exhibitName = exhibitName;
         this.order = order;
+        this.selected = selected;
     }
 
     @Override
@@ -32,6 +34,7 @@ public class SearchListItem {
                 "id=" + id +
                 ", exhibitName='" + exhibitName + '\'' +
                 ", order=" + order +
+                ", selected=" + selected +
                 '}';
     }
 
