@@ -33,18 +33,6 @@ public class UnitTests {
     public ActivityScenarioRule<SearchListActivity> scenarioRule = new ActivityScenarioRule<>(SearchListActivity.class);
 
     @Test
-    public void searchAddsExhibit() {
-        ActivityScenario<SearchListActivity> scenario = scenarioRule.getScenario();
-
-        scenario.moveToState(Lifecycle.State.CREATED);
-
-        scenario.onActivity(activity -> {
-            SearchView searched = activity.findViewById(R.id.search_bar);
-            assertNotNull(searched);
-        });
-    }
-
-    @Test
     public void listDisplayed() {
         ActivityScenario<SearchListActivity> scenario = scenarioRule.getScenario();
 
@@ -53,18 +41,6 @@ public class UnitTests {
         scenario.onActivity(activity -> {
             ListView list = activity.findViewById(R.id.list_view);
             assertNotNull(list);
-        });
-    }
-
-    @Test
-    public void numExhibitsDisplayed() {
-        ActivityScenario<SearchListActivity> scenario = scenarioRule.getScenario();
-
-        scenario.moveToState(Lifecycle.State.CREATED);
-
-        scenario.onActivity(activity -> {
-            TextView count = activity.findViewById(R.id.num_exhibits_view);
-            assertNotNull(count);
         });
     }
 }
