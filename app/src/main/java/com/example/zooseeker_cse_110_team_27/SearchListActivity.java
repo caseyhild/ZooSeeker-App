@@ -104,11 +104,15 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         Intent intent = new Intent(SearchListActivity.this, PlanRouteActivity.class);
         ArrayList<String> passExhibitNames = new ArrayList<>();
         for (SearchListItem e : exhibitsinList) {
-            String id = exhibitIdMap.get(e.exhibitName);
-            passExhibitNames.add(id);
+            if(e.selected) {
+                String id = exhibitIdMap.get(e.exhibitName);
+                passExhibitNames.add(id);
+            }
         }
-        intent.putExtra("key", passExhibitNames);
-        startActivity(intent);
+        if(passExhibitNames.size() != 0) {
+            intent.putExtra("key", passExhibitNames);
+            startActivity(intent);
+        }
     }
 
 
