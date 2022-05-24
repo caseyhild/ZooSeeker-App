@@ -15,6 +15,9 @@ public interface SearchListItemDao {
     @Insert
     long insert(SearchListItem searchListItem);
 
+    @Query("DELETE FROM search_list_items")
+    void nukeTable();
+
     @Query("SELECT * FROM `search_list_items` WHERE `id` = :id")
     SearchListItem get(long id);
 

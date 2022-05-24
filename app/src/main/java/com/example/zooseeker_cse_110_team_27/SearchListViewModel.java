@@ -1,6 +1,7 @@
 package com.example.zooseeker_cse_110_team_27;
 import android.app.Application;
 import android.content.Context;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -43,10 +44,10 @@ public class SearchListViewModel extends AndroidViewModel {
         searchListItemDao.update(SearchListItem);
     }
 
-    public void createExhibit(String exhibitName) {
+    public void createExhibit(String exhibitName, boolean checked) {
         int endOfListOrder = searchListItemDao.getOrderForAppend();
         exhibitNames.add(exhibitName);
-        SearchListItem newItem = new SearchListItem(exhibitName, endOfListOrder, false);
+        SearchListItem newItem = new SearchListItem(exhibitName, endOfListOrder, checked);
         searchListItemDao.insert(newItem);
     }
 
@@ -74,6 +75,10 @@ public class SearchListViewModel extends AndroidViewModel {
     {
         searchListItem.selected = !searchListItem.selected;
         searchListItemDao.update(searchListItem);
+    }
+
+    public void clearList() {
+        searchListItemDao.nukeTable();
     }
 }
 
