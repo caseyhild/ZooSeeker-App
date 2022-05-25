@@ -1,5 +1,7 @@
 package com.example.zooseeker_cse_110_team_27;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,6 +24,10 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.List;
+
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -31,15 +37,19 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 public class UnitTests {
     @Rule
     public ActivityScenarioRule<SearchListActivity> scenarioRule = new ActivityScenarioRule<>(SearchListActivity.class);
+    public ActivityScenarioRule<CompactListActivity> scenarioRuleCompact = new ActivityScenarioRule<>(CompactListActivity.class);
 
     @Test
-    public void listDisplayed() {
+    public void selectedDisplayed() {
         ActivityScenario<SearchListActivity> scenario = scenarioRule.getScenario();
 
         scenario.moveToState(Lifecycle.State.CREATED);
 
         scenario.onActivity(activity -> {
             ListView list = activity.findViewById(R.id.list_view);
+            List<SearchListItem> exhibits = activity.returnExhibitList();
+
+            assertNotNull(exhibits);
             assertNotNull(list);
         });
     }

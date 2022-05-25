@@ -5,9 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -66,6 +69,11 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         return ctr;
     }
 
+    public List<SearchListItem> getList() {
+        return searchListItems;
+    }
+
+
     @Override
     public long getItemId(int position) {
         return searchListItems.get(position).id;
@@ -92,6 +100,8 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         public SearchListItem getSearchListItem() {
             return searchListItem;
         }
+
+        public List<SearchListItem> getSearchList() {return searchListItems;}
 
         public void setSearchListItem(SearchListItem searchListItem) {
             this.searchListItem = searchListItem;
