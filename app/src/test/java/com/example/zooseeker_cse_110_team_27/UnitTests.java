@@ -53,19 +53,4 @@ public class UnitTests {
             assertNotNull(list);
         });
     }
-
-    @Test
-    public void summaryDisplayed() {
-        ActivityScenario<SearchListActivity> scenario = scenarioRule.getScenario();
-
-        scenario.moveToState(Lifecycle.State.CREATED);
-
-        scenario.onActivity(activity -> {
-            ListView list = activity.findViewById(R.id.list_view);
-            List<SearchListItem> exhibits = activity.returnExhibitList();
-
-            assertNotNull(exhibits);
-            assertNotNull(list);
-        });
-    }
 }
