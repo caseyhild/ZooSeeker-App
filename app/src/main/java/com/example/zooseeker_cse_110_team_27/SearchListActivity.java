@@ -144,7 +144,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         for(Exhibit e : exhibits) {
             Log.d("tag",e.name);
             int filterLength = filter.length();
-            if(e.name.toLowerCase().substring(0, filterLength).equals(filter.toLowerCase())) {
+            if(filterLength <= e.name.length() && e.name.toLowerCase().substring(0, filterLength).equals(filter.toLowerCase())) {
                 Log.d("tag","contained");
                 displayedExhibits.add(e);
             }
