@@ -4,6 +4,9 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import com.example.zooseeker_cse_110_team_27.location.Coord;
+import com.example.zooseeker_cse_110_team_27.utils.LatLngs;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
@@ -24,12 +27,16 @@ public class Exhibit {
     public String kind;
     public String name;
     public List<String> tags;
+    public double lat;
+    public double lng;
 
-    public Exhibit(@NonNull String id, String kind, String name, List<String> tags) {
+    public Exhibit(@NonNull String id, String kind, String name, List<String> tags, double lat, double lng) {
         this.id = id;
         this.kind = kind;
         this.name = name;
         this.tags = tags;
+        this.lat = lat;
+        this.lng = lng;
     }
 
     @NonNull
@@ -40,6 +47,8 @@ public class Exhibit {
                 ", kind='" + kind + '\'' +
                 ", name='" + name + '\'' +
                 ", tags=" + tags +
+                ", lat=" + lat +
+                ", lng=" + lng +
                 '}';
     }
 
@@ -74,6 +83,15 @@ public class Exhibit {
             }
         }
         return exhibitTagMap;
+    }
+
+    public static HashMap<String, Coord> getCoordMap(List<Exhibit> exhibits) {
+        HashMap<String, Coord> m = new HashMap<>();
+        for (Exhibit e : exhibits) {
+            Coord coord = new Coord(e.lat, e.lng);
+            m.put(e.id, coord);
+        }
+        return m;
     }
 
 }

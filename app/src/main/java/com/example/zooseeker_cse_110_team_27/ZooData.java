@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.example.zooseeker_cse_110_team_27.location.Coord;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
@@ -114,4 +115,5 @@ public class ZooData {
         }
 
     }
+
 }

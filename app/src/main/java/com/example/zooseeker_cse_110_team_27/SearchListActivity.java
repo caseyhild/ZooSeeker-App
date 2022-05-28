@@ -19,7 +19,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.zooseeker_cse_110_team_27.location.Coord;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -44,6 +47,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     private TextView numExhibits;
     private Map<String,String> exhibitTagMap;
     private Map<String,String> selectedMap;
+    private HashMap<String, Coord> coords;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -69,9 +73,11 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         exhibitTagMap = Exhibit.getSearchMap(exhibits);
         exhibitIdMap = Exhibit.getIdMap(exhibits);
         selectedMap = new HashMap<>();
+        coords = Exhibit.getCoordMap(exhibits);
+
         populateSelectedMap();
 
-        for(String s : selectedMap.keySet()) { Log.d("key",s); }
+        //for(String s : selectedMap.keySet()) { Log.d("key",s); }
 
         this.searchView = this.findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(
@@ -112,6 +118,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     private void onPlanClicked(View view) {
         Intent intent = new Intent(SearchListActivity.this, PlanRouteActivity.class);
         ArrayList<String> passExhibitNames = new ArrayList<>();
+        intent.putExtra("coords", coords);
         for (SearchListItem e : exhibitsinList) {
             if(e.selected) {
                 String id = exhibitIdMap.get(e.exhibitName);
