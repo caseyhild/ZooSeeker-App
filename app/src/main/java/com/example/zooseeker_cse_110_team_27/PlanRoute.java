@@ -109,4 +109,11 @@ public class PlanRoute {
         return ap;
     }
 
+    public String getNextExhibitName(ArrayList<ArrayList<String>> shortPaths) {
+        GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g,
+                shortPaths.get(1).get(0),
+                shortPaths.get(1).get(1));
+        return vInfo.get(path.getStartVertex()).name;
+    }
+
 }

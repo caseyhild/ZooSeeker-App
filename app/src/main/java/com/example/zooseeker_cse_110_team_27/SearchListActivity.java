@@ -2,6 +2,7 @@ package com.example.zooseeker_cse_110_team_27;
 
 import android.app.SearchManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.Log;
@@ -19,21 +20,27 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class SearchListActivity extends AppCompatActivity implements SearchListAdapter.ItemCallback{
+    private Gson gson;
     public RecyclerView recyclerView;
     private SearchView searchView;
     private SearchListViewModel viewModel;
-    private Button addExhibitButton;
+    private Button clearButton;
     private Button planRouteButton;
     private TextView deleteButton;
     private ArrayList<Exhibit> exhibits;
@@ -48,6 +55,8 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
+        gson = new Gson();
+
         viewModel = new ViewModelProvider(this).get(SearchListViewModel.class);
 
         Intent intent = getIntent();
@@ -56,8 +65,20 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
             doMySearch(query);
         }
 
+        //load previous selected exhibits
+        SharedPreferences sh = getSharedPreferences("SelectedPref", MODE_PRIVATE);
+        String savedSelectedMap = sh.getString("map","empty");
+        if(savedSelectedMap.equals("empty")) {
+            selectedMap = new HashMap<>();
+            populateSelectedMap();
+        }
+        else {
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+            selectedMap = gson.fromJson(savedSelectedMap, type);
+        }
+
+        //setup
         adapter = new SearchListAdapter(this);
-        //adapter.setOnDeleteButtonClicked(viewModel::deleteSearchExhibit);
         adapter.setHasStableIds(true);
         adapter.setOnCheckBoxClickedHandler(viewModel::toggleCompleted);
         viewModel.getSearchListItems().observe(this, adapter::setSearchListItems);
@@ -68,10 +89,6 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         displayedExhibits = new ArrayList<>(exhibits);
         exhibitTagMap = Exhibit.getSearchMap(exhibits);
         exhibitIdMap = Exhibit.getIdMap(exhibits);
-        selectedMap = new HashMap<>();
-        populateSelectedMap();
-
-        for(String s : selectedMap.keySet()) { Log.d("key",s); }
 
         this.searchView = this.findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(
@@ -96,11 +113,33 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         this.planRouteButton = this.findViewById(R.id.plan_route_btn);
         planRouteButton.setOnClickListener(this::onPlanClicked);
 
+        this.clearButton = this.findViewById(R.id.clear_btn);
+        clearButton.setOnClickListener(this::onClearClicked);
+
         this.numExhibits = this.findViewById(R.id.num_exhibits_view);
 
         updateTextView();
         saveSelected();
         populateDisplay();
+    }
+
+    @Override
+    protected void onPause() {
+        saveSelectedExhibits();
+
+        super.onPause();
+    }
+
+    private void saveSelectedExhibits() {
+        SharedPreferences sharedPrefSelected = getSharedPreferences("SelectedPref",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPrefSelected.edit();
+        editor.clear();
+
+        String selectedMapString = gson.toJson(selectedMap);
+
+        editor.putString("map",selectedMapString);
+
+        editor.commit();
     }
 
     private void doMySearch(String query) {
@@ -124,6 +163,12 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         }
     }
 
+    private void onClearClicked(View view) {
+        adapter.resetSelected();
+        updateExhibitList("");
+        populateDisplay();
+    }
+
     @Override
     public void updateTextView() {
         String update = adapter.getSelected() + "";
@@ -144,9 +189,17 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         for(Exhibit e : exhibits) {
             Log.d("tag",e.name);
             int filterLength = filter.length();
-            if(filterLength <= e.name.length() && e.name.toLowerCase().substring(0, filterLength).equals(filter.toLowerCase())) {
-                Log.d("tag","contained");
-                displayedExhibits.add(e);
+            if(!displayedExhibits.contains(e)) {
+                if (filterLength <= e.name.length() && e.name.toLowerCase().substring(0, filterLength).equals(filter.toLowerCase())) {
+                    Log.d("tag", "contained");
+                    displayedExhibits.add(e);
+                }
+                for (String tag : e.tags) {
+                    if (filterLength <= tag.length() && tag.toLowerCase().substring(0, filterLength).equals(filter.toLowerCase())) {
+                        Log.d("tag", "contained");
+                        displayedExhibits.add(e);
+                    }
+                }
             }
         }
         saveSelected();
