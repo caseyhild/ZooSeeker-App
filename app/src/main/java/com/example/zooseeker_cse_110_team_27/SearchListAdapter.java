@@ -69,6 +69,12 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         return ctr;
     }
 
+    public void resetSelected() {
+        for(SearchListItem s : searchListItems) {
+            s.selected = false;
+        }
+    }
+
     public List<SearchListItem> getList() {
         return searchListItems;
     }
