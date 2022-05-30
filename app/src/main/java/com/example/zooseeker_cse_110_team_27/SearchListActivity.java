@@ -68,17 +68,6 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
             doMySearch(query);
         }
 
-        //load previous selected exhibits
-        SharedPreferences sh = getSharedPreferences("SelectedPref", MODE_PRIVATE);
-        String savedSelectedMap = sh.getString("map","empty");
-        if(savedSelectedMap.equals("empty")) {
-            selectedMap = new HashMap<>();
-            populateSelectedMap();
-        }
-        else {
-            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-            selectedMap = gson.fromJson(savedSelectedMap, type);
-        }
 
         //setup
         adapter = new SearchListAdapter(this);
@@ -89,11 +78,24 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         exhibits = (ArrayList<Exhibit>) Exhibit.loadJSONForSearching(this, "sample_node_info.json");
+        Log.d("debuggging",exhibits.toString());
         displayedExhibits = new ArrayList<>(exhibits);
         exhibitTagMap = Exhibit.getSearchMap(exhibits);
         exhibitIdMap = Exhibit.getIdMap(exhibits);
-      
         coords = Exhibit.getCoordMap(exhibits);
+
+        //load previous selected exhibits
+        SharedPreferences sh = getSharedPreferences("SelectedPref", MODE_PRIVATE);
+        String savedSelectedMap = sh.getString("map","empty");
+        if(savedSelectedMap.equals("empty")) {
+            Log.d("debuggging","works");
+            selectedMap = new HashMap<>();
+            populateSelectedMap();
+        }
+        else {
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+            selectedMap = gson.fromJson(savedSelectedMap, type);
+        }
 
         this.searchView = this.findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(
@@ -218,6 +220,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
             Exhibit e = displayedExhibits.get(i);
             List<String> list = viewModel.getNames();
             if(!list.contains(e.name) && e.kind.equals("exhibit")) {
+                Log.d("debuggging",selectedMap.toString());
                 if(selectedMap.get(e.name).equals("true"))
                     viewModel.createExhibit(e.name,true);
                 else
