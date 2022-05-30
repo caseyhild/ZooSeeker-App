@@ -3,12 +3,15 @@ package com.example.zooseeker_cse_110_team_27;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.zooseeker_cse_110_team_27.location.Coord;
+
 import org.jgrapht.Graph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +19,9 @@ public class PlanRoute {
     private Map<String, ZooData.VertexInfo> vInfo;
     private Map<String, ZooData.EdgeInfo> eInfo;
     private Graph<String, IdentifiedWeightedEdge> g;
+
+    private double DEG_LAT_IN_FT = 363843.57;
+    private double DEG_LNG_IN_FT = 307515.50;
 
     private Context context;
 
@@ -29,12 +35,15 @@ public class PlanRoute {
         eInfo = ZooData.loadEdgeInfoJSON(context,"sample_edge_info.json");
     }
 
-    void createGoals(ArrayList<String> goals, String start, ArrayList<ArrayList<String>> shortPaths) {
+    ArrayList<ArrayList<String>> createGoals(ArrayList<String> goals, String start) {
         GraphPath<String, IdentifiedWeightedEdge> shortestPath = null;
         String goal = "";
 
-        while (!goals.isEmpty()) {
-            for (String goale : goals) {
+        ArrayList<String> newGoals = new ArrayList<String>(goals);
+        ArrayList<ArrayList<String>> shortPaths = new ArrayList<>();
+
+        while (!newGoals.isEmpty()) {
+            for (String goale : newGoals) {
                 GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g, start, goale);
 
                 if (shortestPath == null || path.getWeight() < shortestPath.getWeight()) {
@@ -50,11 +59,10 @@ public class PlanRoute {
 
             shortPaths.add(temp);
             start = goal;
-            goals.remove(goal);
+            newGoals.remove(goal);
         }
 
-
-        Log.d("TAG", shortPaths.toString());
+        return shortPaths;
     }
 
     String setCompactList(ArrayList<ArrayList<String>> shortPaths) {
@@ -107,6 +115,38 @@ public class PlanRoute {
         shortPaths.remove(0);
 
         return ap;
+    }
+
+    //get the current coord of the user
+    //get the list of the coords of all exhibits
+    //get the users current goals
+    //go through the goals list and find the closest goal to the user and calculate whatever the distance is
+    //set the closest goal to be the new start
+    //run createGoals method with the new start and the same goals again
+    //return the new start location
+    String offRoute(Coord p1, HashMap<String, Coord> coords, ArrayList<String> goals) {
+        double weight = Integer.MAX_VALUE;
+        int BASE = 100;
+        String tempStr = "";
+        for (String goal : goals) {
+            Coord p2 = coords.get(goal);
+
+            double d_lat = Math.abs(p1.lat - p2.lat);
+            double d_lng = Math.abs(p1.lng - p2.lng);
+
+            double d_ft_v = d_lat * DEG_LAT_IN_FT;
+            double d_ft_h = d_lng * DEG_LNG_IN_FT;
+
+            double d_ft = Math.sqrt(Math.pow(d_ft_h,2) + Math.pow(d_ft_v,2));
+            double tempWeight = BASE * Math.ceil(d_ft/ BASE);
+
+            if (tempWeight < weight) {
+                tempStr = goal;
+                weight = tempWeight;
+            }
+        }
+
+        return tempStr;
     }
 
 }
