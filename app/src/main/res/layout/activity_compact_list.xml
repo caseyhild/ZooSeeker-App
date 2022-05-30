@@ -4,11 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PlanRouteActivity">
-
+    tools:context=".CompactListActivity">
 
     <TextView
-        android:id="@+id/directions_textView"
+        android:id="@+id/compactlist_tv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text=""
@@ -18,29 +17,17 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.005" />
+        app:layout_constraintVertical_bias="0.005"/>
 
     <Button
-        android:id="@+id/next_btn"
+        android:id="@+id/return_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Next"
-        app:layout_constraintBottom_toBottomOf="@+id/directions_textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.95"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.976" />
-
-    <Button
-        android:id="@+id/compact_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="See List"
+        android:text="Return"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/directions_textView"
+        app:layout_constraintEnd_toEndOf="@+id/compactlist_tv"
         app:layout_constraintHorizontal_bias="0.115"
-        app:layout_constraintStart_toStartOf="@+id/directions_textView"
-        app:layout_constraintTop_toTopOf="@+id/directions_textView"
+        app:layout_constraintStart_toStartOf="@+id/compactlist_tv"
+        app:layout_constraintTop_toTopOf="@+id/compactlist_tv"
         app:layout_constraintVertical_bias="0.976" />
 </androidx.constraintlayout.widget.ConstraintLayout>

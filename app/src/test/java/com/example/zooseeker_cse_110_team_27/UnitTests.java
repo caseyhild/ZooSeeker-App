@@ -1,11 +1,15 @@
 package com.example.zooseeker_cse_110_team_27;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.shadows.ShadowMediaPlayer;
 
 import static org.junit.Assert.*;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +24,10 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.List;
+
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -28,43 +36,21 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 public class UnitTests {
     @Rule
-    public ActivityScenarioRule<MainActivity> scenarioRule = new ActivityScenarioRule<>(MainActivity.class);
+    public ActivityScenarioRule<SearchListActivity> scenarioRule = new ActivityScenarioRule<>(SearchListActivity.class);
+    public ActivityScenarioRule<CompactListActivity> scenarioRuleCompact = new ActivityScenarioRule<>(CompactListActivity.class);
 
     @Test
-    public void searchAddsExhibit() {
-        ActivityScenario<MainActivity> scenario = scenarioRule.getScenario();
+    public void selectedDisplayed() {
+        ActivityScenario<SearchListActivity> scenario = scenarioRule.getScenario();
 
         scenario.moveToState(Lifecycle.State.CREATED);
 
         scenario.onActivity(activity -> {
-            SearchView searched = activity.findViewById(R.id.search_bar);
-            Button addButton = activity.findViewById(R.id.add_exhibit_btn);
-            TextView exhibit = activity.findViewById(R.id.searched_item);
-
-            if(searched != null && addButton != null && exhibit != null) {
-                searched.setQuery("Bear", true);
-                addButton.performClick();
-                assertEquals("Bear", exhibit.getText());
-            }
-        });
-    }
-
-    @Test
-    public void listDisplayed() {
-        ActivityScenario<MainActivity> scenario = scenarioRule.getScenario();
-
-        scenario.moveToState(Lifecycle.State.CREATED);
-
-        scenario.onActivity(activity -> {
-            SearchView searched = activity.findViewById(R.id.search_bar);
-            Button addButton = activity.findViewById(R.id.add_exhibit_btn);
             ListView list = activity.findViewById(R.id.list_view);
+            List<SearchListItem> exhibits = activity.returnExhibitList();
 
-            if(searched != null && addButton != null) {
-                searched.setQuery("Bear", true);
-                addButton.performClick();
-                assertNotNull(list);
-            }
+            assertNotNull(exhibits);
+            assertNotNull(list);
         });
     }
 }

@@ -4,9 +4,13 @@ import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -19,7 +23,7 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
 
     private ItemCallback listener;
     private List<SearchListItem> searchListItems = Collections.emptyList();
-    private Consumer<SearchListItem> onDeleteButtonClicked;
+    private Consumer<SearchListItem> onCheckBoxClicked;
 
     public SearchListAdapter(ItemCallback listener) {
         this.listener = listener;
@@ -33,8 +37,8 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         notifyDataSetChanged();
     }
 
-    public void setOnDeleteButtonClicked(Consumer<SearchListItem> onDeleteButtonClicked) {
-        this.onDeleteButtonClicked = onDeleteButtonClicked;
+    public void setOnCheckBoxClickedHandler(Consumer<SearchListItem> onCheckBoxClicked) {
+        this.onCheckBoxClicked = onCheckBoxClicked;
     }
 
     @NonNull
@@ -54,6 +58,22 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         return searchListItems.size();
     }
 
+    public int getSelected() {
+        int ctr = 0;
+        for(SearchListItem s : searchListItems)
+        {
+            if(s.selected == true) {
+                ctr++;
+            }
+        }
+        return ctr;
+    }
+
+    public List<SearchListItem> getList() {
+        return searchListItems;
+    }
+
+
     @Override
     public long getItemId(int position) {
         return searchListItems.get(position).id;
@@ -61,7 +81,8 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView textView, deleteButton;
+        private final TextView textView;//deleteButton;
+        private final CheckBox checkBox;
         private SearchListItem searchListItem;
 
 
@@ -69,26 +90,23 @@ public class SearchListAdapter extends RecyclerView.Adapter<SearchListAdapter.Vi
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             this.textView = itemView.findViewById(R.id.searched_item);
-            this.deleteButton = itemView.findViewById(R.id.delete_btn);
-
-            this.deleteButton.setOnClickListener(view -> {
-                if (onDeleteButtonClicked == null) {
-                    return;
-                }
-                onDeleteButtonClicked.accept(searchListItem);
-                listener.updateTextView();
+            this.checkBox = itemView.findViewById(R.id.checkBox);
+            this.checkBox.setOnClickListener(view -> {
+                if(onCheckBoxClicked==null) return;
+                onCheckBoxClicked.accept(searchListItem);
             });
-
         }
 
         public SearchListItem getSearchListItem() {
             return searchListItem;
         }
 
+        public List<SearchListItem> getSearchList() {return searchListItems;}
+
         public void setSearchListItem(SearchListItem searchListItem) {
             this.searchListItem = searchListItem;
             this.textView.setText(searchListItem.exhibitName);
-
+            this.checkBox.setChecked(searchListItem.selected);
         }
 
 

@@ -13,13 +13,17 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -33,11 +37,13 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     private Button planRouteButton;
     private TextView deleteButton;
     private ArrayList<Exhibit> exhibits;
+    private ArrayList<Exhibit> displayedExhibits;
     private List<SearchListItem> exhibitsinList;
     private Map<String, String> exhibitIdMap;
     private SearchListAdapter adapter;
     private TextView numExhibits;
     private Map<String,String> exhibitTagMap;
+    private Map<String,String> selectedMap;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -51,24 +57,32 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         }
 
         adapter = new SearchListAdapter(this);
-        adapter.setOnDeleteButtonClicked(viewModel::deleteSearchExhibit);
+        //adapter.setOnDeleteButtonClicked(viewModel::deleteSearchExhibit);
         adapter.setHasStableIds(true);
+        adapter.setOnCheckBoxClickedHandler(viewModel::toggleCompleted);
         viewModel.getSearchListItems().observe(this, adapter::setSearchListItems);
         recyclerView = findViewById(R.id.search_list_items);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         exhibits = (ArrayList<Exhibit>) Exhibit.loadJSONForSearching(this, "sample_node_info.json");
+        displayedExhibits = new ArrayList<>(exhibits);
         exhibitTagMap = Exhibit.getSearchMap(exhibits);
         exhibitIdMap = Exhibit.getIdMap(exhibits);
-        System.out.println(exhibitIdMap.toString());
+        selectedMap = new HashMap<>();
+        populateSelectedMap();
+
+        for(String s : selectedMap.keySet()) { Log.d("key",s); }
 
         this.searchView = this.findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(
                 new SearchView.OnQueryTextListener(){
                     @Override
                     public boolean onQueryTextChange(String newText){
-                        //TODO
                         //text changes, search exhibitTagMap, update list_view
+                        Log.d("tag",newText);
+                        saveSelected();
+                        updateExhibitList(newText);
+                        populateDisplay();
                         return false;
                     }
                     @Override
@@ -78,8 +92,6 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
                     }
                 }
         );
-        this.addExhibitButton = this.findViewById(R.id.add_exhibit_btn);
-        addExhibitButton.setOnClickListener(this::onAddSearchClicked);
 
         this.planRouteButton = this.findViewById(R.id.plan_route_btn);
         planRouteButton.setOnClickListener(this::onPlanClicked);
@@ -87,6 +99,8 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         this.numExhibits = this.findViewById(R.id.num_exhibits_view);
 
         updateTextView();
+        saveSelected();
+        populateDisplay();
     }
 
     private void doMySearch(String query) {
@@ -99,39 +113,77 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         Intent intent = new Intent(SearchListActivity.this, PlanRouteActivity.class);
         ArrayList<String> passExhibitNames = new ArrayList<>();
         for (SearchListItem e : exhibitsinList) {
-            String id = exhibitIdMap.get(e.exhibitName);
-            passExhibitNames.add(id);
+            if(e.selected) {
+                String id = exhibitIdMap.get(e.exhibitName);
+                passExhibitNames.add(id);
+            }
         }
-        intent.putExtra("key", passExhibitNames);
-        startActivity(intent);
-    }
-
-
-
-    private void onAddSearchClicked(View view) {
-        String text = searchView.getQuery().toString();
-        System.out.println(exhibitTagMap.get(text));
-        System.out.println(exhibitsinList.toString());
-        if(text.length() == 0
-                || exhibitsinList.contains(exhibitTagMap.get(text))
-                || viewModel.getSearchListItems().getValue().contains(exhibitTagMap.get(text)))
-        {return;}
-
-        if (exhibitTagMap.containsKey(text)) {
-            searchView.setQuery("", false);
-            viewModel.createExhibit(exhibitTagMap.get(text));
-            updateTextView();
+        if(passExhibitNames.size() != 0) {
+            intent.putExtra("key", passExhibitNames);
+            startActivity(intent);
         }
     }
 
     @Override
     public void updateTextView() {
-        numExhibits.setText(adapter.getItemCount() + "");
+        String update = adapter.getSelected() + "";
+        numExhibits.setText(update);
+        saveSelected();
     }
 
     public void getExhibitsinList(List<SearchListItem> exhibitList) {
         exhibitsinList = exhibitList;
     }
+
+    public List<SearchListItem> returnExhibitList() {
+        return exhibitsinList;
+    }
+
+    public void updateExhibitList(String filter) {
+        displayedExhibits = new ArrayList<>();
+        for(Exhibit e : exhibits) {
+            Log.d("tag",e.name);
+            int filterLength = filter.length();
+            if(filterLength <= e.name.length() && e.name.toLowerCase().substring(0, filterLength).equals(filter.toLowerCase())) {
+                Log.d("tag","contained");
+                displayedExhibits.add(e);
+            }
+        }
+        saveSelected();
+    }
+
+    public void populateDisplay() {
+        clearDisplay();
+        for(int i = 0; i < displayedExhibits.size(); i++)
+        {
+            Exhibit e = displayedExhibits.get(i);
+            List<String> list = viewModel.getNames();
+            if(!list.contains(e.name) && e.kind.equals("exhibit")) {
+                if(selectedMap.get(e.name).equals("true"))
+                    viewModel.createExhibit(e.name,true);
+                else
+                    viewModel.createExhibit(e.name,false);
+            }
+        }
+        updateTextView();
+    }
+
+    public void populateSelectedMap() {
+        for(Exhibit e : exhibits) {
+            selectedMap.put(e.name,"false");
+        }
+    }
+
+    public void saveSelected() {
+        for(SearchListItem s : adapter.getList()) {
+            if(s.selected)
+                selectedMap.put(s.exhibitName, "true");
+            else
+                selectedMap.put(s.exhibitName, "false");
+        }
+    }
+
+    public void clearDisplay() { viewModel.clearList(); }
 }
 
 

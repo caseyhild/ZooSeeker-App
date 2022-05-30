@@ -10,6 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Zooseekercse110team27">
         <activity
+            android:name=".CompactListActivity"
+            android:exported="false" />
+        <activity
             android:name=".PlanRouteActivity"
             android:exported="false" />
         <activity
