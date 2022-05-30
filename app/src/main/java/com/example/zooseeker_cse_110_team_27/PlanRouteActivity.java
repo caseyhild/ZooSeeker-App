@@ -4,26 +4,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.zooseeker_cse_110_team_27.location.Coord;
 
-import org.jgrapht.Graph;
-import org.jgrapht.GraphPath;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PlanRouteActivity extends AppCompatActivity{
     private TextView tv;
+    private EditText lat_et;
+    private EditText lng_et;
     private Button nextBtn;
     private Button compactBtn;
     private Button relocateBtn;
@@ -43,6 +38,9 @@ public class PlanRouteActivity extends AppCompatActivity{
         String start = "entrance_exit_gate";
         goals = (ArrayList<String>) getIntent().getSerializableExtra("key");
         coords = (HashMap<String, Coord>) getIntent().getSerializableExtra("coords");
+
+        lat_et = findViewById(R.id.lat_et);
+        lng_et = findViewById(R.id.lng_et);
 
         tv = findViewById(R.id.directions_textView);
         relocateBtn = findViewById(R.id.relocate_btn);
@@ -66,35 +64,50 @@ public class PlanRouteActivity extends AppCompatActivity{
         temp.add("entrance_exit_gate");
         shortPaths.add(temp);
 
-        setShortestPath(shortPaths);
-        Log.d("TAG", shortPaths.toString());
-    }
-
-    private void onRelocateClicked(View view) {
-        Coord p1 = new Coord(32.74711745394194, -117.18047982358976);
-        Log.d("onRelocate", goals.toString());
-        String newStart = pr.offRoute(p1, coords, goals);
-
-        ArrayList<String> newGoals = new ArrayList<String>(goals);
-        newGoals.remove(newStart);
-        shortPaths = pr.createGoals(newGoals, newStart);
-        Log.d("onRelocate", shortPaths.toString());
-
-        ArrayList<String> temp = new ArrayList<>();
-        temp.add(shortPaths.get(shortPaths.size() - 1).get(1));
-        temp.add("entrance_exit_gate");
-        shortPaths.add(temp);
-
-        setShortestPath(shortPaths);
-    }
-
-    private void setShortestPath(ArrayList<ArrayList<String>> shortPaths) {
-        //set the textview back to empty
         tv.setText("");
+        //this one is false since we don't want to remove the exhibit from the list just yet when we create the activity
+        //when we created the activity, the user has NOT visited the next exhibit yet
+        //so we don't remove it from the list yet
+        //only when we click next on the next exhibit, would we remove it
+        //so test case: entrance->flamingos, then click next, flamingos->monkeys, remove flamingos from the list
+        //goals: [flamingos, monkeys] -> [monkeys]
+        tv.setText(pr.setShortestPath(shortPaths, goals, false));
+    }
 
-        //rewrite the textview to the shortest path
-        tv.setText(pr.setShortestPath(shortPaths));
+    //if the user wants to relocate, it will first relocate
+    //then if the exhibit is way further than it actually is, the button name will change to Relocate?
+    //when this happens, if the user press relocate? then it will change the exhibits to match the shortest path from
+    //the user's location
+    private void onRelocateClicked(View view) {
+        String lat = lat_et.getText().toString();
+        String lng = lng_et.getText().toString();
 
+        if (lat.equals("") || lng.equals("")) {
+            return;
+        }
+
+        Coord p1 = new Coord(Double.parseDouble(lat), Double.parseDouble(lng));
+
+        if (relocateBtn.getText().toString() == "Relocate?") {
+            //take current pos of the user and the current
+            String newStart = pr.offRouteLocator(p1, coords, goals);
+
+            ArrayList<String> newGoals = new ArrayList<>(goals);
+            newGoals.remove(newStart);
+            shortPaths = pr.createGoals(newGoals, newStart);
+
+            ArrayList<String> temp = new ArrayList<>();
+            temp.add(shortPaths.get(shortPaths.size() - 1).get(1));
+            temp.add("entrance_exit_gate");
+            shortPaths.add(temp);
+
+            tv.setText(pr.setShortestPath(shortPaths, goals, true));
+            relocateBtn.setText("Change Location");
+        }
+        else if (pr.getTempWeight(p1, coords.get(shortPaths.get(0).get(0))) > 500) {
+            relocateBtn.setText("Relocate?");
+            return;
+        }
 
     }
 
@@ -119,8 +132,17 @@ public class PlanRouteActivity extends AppCompatActivity{
             nextBtn.setText("Finish");
         }
 
-        //otherwise we just change the textview of the activity to shortPaths
-        setShortestPath(shortPaths);
+        //send shortgoals, goals, and check if the user clicked next exhibit in this function
+        //if they did, that means they 'visited' the exhibit
+        //so if it was entrance->gorillas
+        //click this function, gorillas would be removed from the exhibit list
+        //otherwise, if the first thing they do is relocate
+        //then the list would remain the same
+        //so entrance->gorillas
+        //relocate
+        //the user would now be at gorillas
+        //they would then go to crocidiles next, and remove gorillas from the list
+        tv.setText(pr.setShortestPath(shortPaths, goals, true));
     }
 
 }

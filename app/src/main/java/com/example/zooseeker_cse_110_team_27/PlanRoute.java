@@ -84,7 +84,7 @@ public class PlanRoute {
         return text;
     }
 
-    String setShortestPath(ArrayList<ArrayList<String>> shortPaths) {
+    String setShortestPath(ArrayList<ArrayList<String>> shortPaths, ArrayList<String> goals, boolean check) {
         String ap = new String();
 
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g,
@@ -112,6 +112,11 @@ public class PlanRoute {
             i++;
         }
 
+        //check if the user is clicking this function when AFTER viewing an exhibit
+        if (check == true) {
+            goals.remove(path.getStartVertex());
+        }
+
         shortPaths.remove(0);
 
         return ap;
@@ -124,21 +129,13 @@ public class PlanRoute {
     //set the closest goal to be the new start
     //run createGoals method with the new start and the same goals again
     //return the new start location
-    String offRoute(Coord p1, HashMap<String, Coord> coords, ArrayList<String> goals) {
+    String offRouteLocator(Coord p1, HashMap<String, Coord> coords, ArrayList<String> goals) {
         double weight = Integer.MAX_VALUE;
-        int BASE = 100;
         String tempStr = "";
         for (String goal : goals) {
             Coord p2 = coords.get(goal);
 
-            double d_lat = Math.abs(p1.lat - p2.lat);
-            double d_lng = Math.abs(p1.lng - p2.lng);
-
-            double d_ft_v = d_lat * DEG_LAT_IN_FT;
-            double d_ft_h = d_lng * DEG_LNG_IN_FT;
-
-            double d_ft = Math.sqrt(Math.pow(d_ft_h,2) + Math.pow(d_ft_v,2));
-            double tempWeight = BASE * Math.ceil(d_ft/ BASE);
+            double tempWeight = getTempWeight(p1, p2);
 
             if (tempWeight < weight) {
                 tempStr = goal;
@@ -147,6 +144,20 @@ public class PlanRoute {
         }
 
         return tempStr;
+    }
+
+    double getTempWeight(Coord p1, Coord p2) {
+        int BASE = 100;
+
+        double d_lat = Math.abs(p1.lat - p2.lat);
+        double d_lng = Math.abs(p1.lng - p2.lng);
+
+        double d_ft_v = d_lat * DEG_LAT_IN_FT;
+        double d_ft_h = d_lng * DEG_LNG_IN_FT;
+
+        double d_ft = Math.sqrt(Math.pow(d_ft_h,2) + Math.pow(d_ft_v,2));
+        double tempWeight = BASE * Math.ceil(d_ft/ BASE);
+        return tempWeight;
     }
 
 }
