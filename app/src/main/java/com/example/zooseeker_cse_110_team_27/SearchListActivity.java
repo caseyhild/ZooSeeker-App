@@ -78,7 +78,6 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
         exhibits = (ArrayList<Exhibit>) Exhibit.loadJSONForSearching(this, "sample_node_info.json");
-        Log.d("debuggging",exhibits.toString());
         displayedExhibits = new ArrayList<>(exhibits);
         exhibitTagMap = Exhibit.getSearchMap(exhibits);
         exhibitIdMap = Exhibit.getIdMap(exhibits);
@@ -88,7 +87,6 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         SharedPreferences sh = getSharedPreferences("SelectedPref", MODE_PRIVATE);
         String savedSelectedMap = sh.getString("map","empty");
         if(savedSelectedMap.equals("empty")) {
-            Log.d("debuggging","works");
             selectedMap = new HashMap<>();
             populateSelectedMap();
         }
@@ -162,7 +160,16 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         for (SearchListItem e : exhibitsinList) {
             if(e.selected) {
                 String id = exhibitIdMap.get(e.exhibitName);
-                passExhibitNames.add(id);
+                for(Exhibit ex : exhibits) {
+                    if(ex.id.equals(id)) {
+                        if(ex.group_id != null) {
+                            id = ex.group_id;
+                        }
+                    }
+                }
+                if(!passExhibitNames.contains(id)) {
+                    passExhibitNames.add(id);
+                }
             }
         }
         if(passExhibitNames.size() != 0) {
@@ -220,7 +227,6 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
             Exhibit e = displayedExhibits.get(i);
             List<String> list = viewModel.getNames();
             if(!list.contains(e.name) && e.kind.equals("exhibit")) {
-                Log.d("debuggging",selectedMap.toString());
                 if(selectedMap.get(e.name).equals("true"))
                     viewModel.createExhibit(e.name,true);
                 else

@@ -116,7 +116,10 @@ public class PlanRouteActivity extends AppCompatActivity{
             temp.add("entrance_exit_gate");
             shortPaths.add(temp);
 
+
+            Log.d("debuggg",shortPaths.toString());
             tv.setText(pr.setShortestPath(shortPaths, goals, true));
+            Log.d("debuggg",shortPaths.toString());
             relocateBtn.setText("Change Location");
         } else if (pr.getTempWeight(p1, coords.get(shortPaths.get(0).get(0))) > 500) {
             relocateBtn.setText("Relocate?");
