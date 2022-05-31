@@ -50,6 +50,7 @@ public class PlanRouteActivity extends AppCompatActivity{
         lng_et = findViewById(R.id.lng_et);
 
         tv = findViewById(R.id.directions_textView);
+        tv.setMovementMethod(new ScrollingMovementMethod());
 
         relocateBtn = findViewById(R.id.relocate_btn);
         relocateBtn.setOnClickListener(this::onRelocateClicked);
