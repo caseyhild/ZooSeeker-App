@@ -29,7 +29,6 @@ public class PlanRouteActivity extends AppCompatActivity{
     private EditText lat_et;
     private EditText lng_et;
     private Button relocateBtn;
-    private ArrayList<ArrayList<String>> shortPaths;
     private HashMap<String, Coord> coords;
 
     private PlanRoute pr;
@@ -117,13 +116,16 @@ public class PlanRouteActivity extends AppCompatActivity{
             temp.add("entrance_exit_gate");
             shortPaths.add(temp);
 
+
+            Log.d("debuggg",shortPaths.toString());
             tv.setText(pr.setShortestPath(shortPaths, goals, true));
+            Log.d("debuggg",shortPaths.toString());
             relocateBtn.setText("Change Location");
-        }
-        else if (pr.getTempWeight(p1, coords.get(shortPaths.get(0).get(0))) > 500) {
+        } else if (pr.getTempWeight(p1, coords.get(shortPaths.get(0).get(0))) > 500) {
             relocateBtn.setText("Relocate?");
             return;
         }
+    }
 
     private void updateNextView() {
         //update next text button depending on what the next exhibit is

@@ -24,14 +24,16 @@ public class Exhibit {
 
     @NonNull
     public String id;
+    public String group_id;
     public String kind;
     public String name;
     public List<String> tags;
     public double lat;
     public double lng;
 
-    public Exhibit(@NonNull String id, String kind, String name, List<String> tags, double lat, double lng) {
+    public Exhibit(@NonNull String id, String group_id, String kind, String name, List<String> tags, double lat, double lng) {
         this.id = id;
+        this.group_id = group_id;
         this.kind = kind;
         this.name = name;
         this.tags = tags;
@@ -44,6 +46,7 @@ public class Exhibit {
     public String toString() {
         return "Exhibit{" +
                 "id='" + id + '\'' +
+                "group_id="+group_id + '\'' +
                 ", kind='" + kind + '\'' +
                 ", name='" + name + '\'' +
                 ", tags=" + tags +

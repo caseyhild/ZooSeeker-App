@@ -68,17 +68,6 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
             doMySearch(query);
         }
 
-        //load previous selected exhibits
-        SharedPreferences sh = getSharedPreferences("SelectedPref", MODE_PRIVATE);
-        String savedSelectedMap = sh.getString("map","empty");
-        if(savedSelectedMap.equals("empty")) {
-            selectedMap = new HashMap<>();
-            populateSelectedMap();
-        }
-        else {
-            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
-            selectedMap = gson.fromJson(savedSelectedMap, type);
-        }
 
         //setup
         adapter = new SearchListAdapter(this);
@@ -92,8 +81,19 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         displayedExhibits = new ArrayList<>(exhibits);
         exhibitTagMap = Exhibit.getSearchMap(exhibits);
         exhibitIdMap = Exhibit.getIdMap(exhibits);
-      
         coords = Exhibit.getCoordMap(exhibits);
+
+        //load previous selected exhibits
+        SharedPreferences sh = getSharedPreferences("SelectedPref", MODE_PRIVATE);
+        String savedSelectedMap = sh.getString("map","empty");
+        if(savedSelectedMap.equals("empty")) {
+            selectedMap = new HashMap<>();
+            populateSelectedMap();
+        }
+        else {
+            java.lang.reflect.Type type = new TypeToken<HashMap<String, String>>(){}.getType();
+            selectedMap = gson.fromJson(savedSelectedMap, type);
+        }
 
         this.searchView = this.findViewById(R.id.search_bar);
         searchView.setOnQueryTextListener(
@@ -160,7 +160,16 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         for (SearchListItem e : exhibitsinList) {
             if(e.selected) {
                 String id = exhibitIdMap.get(e.exhibitName);
-                passExhibitNames.add(id);
+                for(Exhibit ex : exhibits) {
+                    if(ex.id.equals(id)) {
+                        if(ex.group_id != null) {
+                            id = ex.group_id;
+                        }
+                    }
+                }
+                if(!passExhibitNames.contains(id)) {
+                    passExhibitNames.add(id);
+                }
             }
         }
         if(passExhibitNames.size() != 0) {
