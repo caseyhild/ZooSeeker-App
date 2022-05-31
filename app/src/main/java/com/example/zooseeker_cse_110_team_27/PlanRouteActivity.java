@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -18,12 +19,12 @@ import java.util.HashMap;
 
 public class PlanRouteActivity extends AppCompatActivity{
     private TextView tv;
-    private TextView nextExhibit;
     private Button nextBtn;
     private Button compactBtn;
     private Button skipBtn;
     private Button backBtn;
     private ArrayList<String> goals;
+    private ArrayList<String> originalGoals;
     private ArrayList<ArrayList<String>> shortPaths;
     private ArrayList<ArrayList<String>> originalPaths;
     private EditText lat_et;
@@ -42,12 +43,14 @@ public class PlanRouteActivity extends AppCompatActivity{
         // "source" and "sink" are graph terms for the start and end
         String start = "entrance_exit_gate";
         goals = (ArrayList<String>) getIntent().getSerializableExtra("key");
+        originalGoals = new ArrayList<>(goals);
         coords = (HashMap<String, Coord>) getIntent().getSerializableExtra("coords");
 
         lat_et = findViewById(R.id.lat_et);
         lng_et = findViewById(R.id.lng_et);
 
         tv = findViewById(R.id.directions_textView);
+
         relocateBtn = findViewById(R.id.relocate_btn);
         relocateBtn.setOnClickListener(this::onRelocateClicked);
 
@@ -63,8 +66,6 @@ public class PlanRouteActivity extends AppCompatActivity{
         backBtn = findViewById(R.id.back_btn);
         backBtn.setOnClickListener(this::onBackClicked);
 
-        nextExhibit = findViewById(R.id.next_exhibit_view);
-
         shortPaths = new ArrayList<>(); //init shortPaths var
 
         //create all the goals along the path
@@ -78,7 +79,6 @@ public class PlanRouteActivity extends AppCompatActivity{
         shortPaths.add(temp);
         originalPaths = new ArrayList<>(shortPaths);
 
-        updateNextView();
         tv.setText("");
         //this one is false since we don't want to remove the exhibit from the list just yet when we create the activity
         //when we created the activity, the user has NOT visited the next exhibit yet
@@ -127,16 +127,6 @@ public class PlanRouteActivity extends AppCompatActivity{
         }
     }
 
-    private void updateNextView() {
-        //update next text button depending on what the next exhibit is
-        if(shortPaths.size() > 1) {
-            nextExhibit.setText("Next exhibit: " + pr.getNextExhibitName(shortPaths));
-        }
-        else {
-            nextExhibit.setText("No exhibits to skip");
-        }
-    }
-
     private void updateNextButtonText() {
         //if shortPaths has only 1 element then set the text of nextBtn to finish
         if (shortPaths.size()<2 && shortPaths.get(0).get(1).equals("entrance_exit_gate")) {
@@ -179,12 +169,22 @@ public class PlanRouteActivity extends AppCompatActivity{
         //the user would now be at gorillas
         //they would then go to crocidiles next, and remove gorillas from the list
         tv.setText(pr.setShortestPath(shortPaths, goals, true));
-        updateNextView();
     }
 
     private void onBackClicked(View view) {
         //finish activity if at the beginning of the path
-        if(shortPaths.size() > originalPaths.size()-2) {
+        String start = "entrance_exit_gate";
+        if(!shortPaths.isEmpty()) {
+            for (int i = 0; i < originalPaths.size(); i++) {
+                if (shortPaths.get(0).equals(originalPaths.get(i))) {
+                    start = originalPaths.get(i - 1).get(0);
+                }
+            }
+        }
+        else {
+            start = originalPaths.get(originalPaths.size()-1).get(0);
+        }
+        if(start.equals("entrance_exit_gate")) {
             finish();
             return;
         }
@@ -207,36 +207,44 @@ public class PlanRouteActivity extends AppCompatActivity{
             }
             //update texts and path
             updateNextButtonText();
-            tv.setText(pr.setShortestPath(shortPaths, goals, true));
-            updateNextView();
+            tv.setText(pr.setShortestPath(shortPaths, goals, false));
         }
     }
 
     private void onSkipClicked(View view) {
         ArrayList<String> tmp = new ArrayList<>();
         //ensure there is an exhibit to skip; else do nothing
-        if(shortPaths.size() > 1) {
-            //create new path that skips next exhibit
-            tmp.add(shortPaths.get(0).get(0));
-            tmp.add(shortPaths.get(1).get(1));
-            //remove exhibit from original path
-            for(int i = 0; i < originalPaths.size(); i++) {
-                ArrayList<String> path = originalPaths.get(i);
-                if(shortPaths.get(0).equals(path)) {
-                    originalPaths.remove(i);
-                    originalPaths.remove(i);
-                    originalPaths.add(i,tmp);
-                    break;
+
+        String start = "entrance_exit_gate";
+        if(!shortPaths.isEmpty()) {
+            for (int i = 0; i < originalPaths.size(); i++) {
+                if (shortPaths.get(0).equals(originalPaths.get(i))) {
+                    start = originalPaths.get(i - 1).get(0);
                 }
             }
-            shortPaths.remove(shortPaths.get(0));
-            shortPaths.remove(shortPaths.get(0));
-            shortPaths.add(0, tmp);
+            Log.d("100t","START: "+start);
+
+            goals.remove(shortPaths.get(0).get(0));
+            originalGoals.remove(shortPaths.get(0).get(0));
 
             updateNextButtonText();
 
-            tv.setText(pr.setShortestPath(shortPaths, goals, true));
-            updateNextView();
+            //recreate shortPaths and originalPaths
+            shortPaths = pr.createGoals(goals,start);
+            ArrayList<String> temp = new ArrayList<>();
+            if(shortPaths.isEmpty()) {
+                temp.add(originalPaths.get(originalPaths.size()-2).get(0));
+            }
+            else {
+                temp.add(shortPaths.get(shortPaths.size() - 1).get(1));
+            }
+            originalPaths = pr.createGoals(originalGoals,"entrance_exit_gate");
+            temp.add("entrance_exit_gate");
+            shortPaths.add(temp);
+            originalPaths.add(temp);
+
+
+            tv.setText(pr.setShortestPath(shortPaths, goals, false));
         }
     }
 
