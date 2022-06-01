@@ -1,7 +1,6 @@
 package com.example.zooseeker_cse_110_team_27;
 
-// OLD TEST | MS 1
-/*
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -21,7 +20,6 @@ import android.view.ViewParent;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
-//import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.runner.AndroidJUnit4;
 
 import org.hamcrest.Description;
@@ -33,13 +31,13 @@ import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class MainActivityTest {
+public class SearchRecommendationTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void mainActivityTest() {
+    public void searchRecommendationTest() {
         ViewInteraction appCompatImageView = onView(
                 allOf(withId(androidx.appcompat.R.id.search_button), withContentDescription("Search"),
                         childAtPosition(
@@ -60,7 +58,13 @@ public class MainActivityTest {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete.perform(replaceText("trg"), closeSoftKeyboard());
+        searchAutoComplete.perform(replaceText("k"), closeSoftKeyboard());
+
+        ViewInteraction textView = onView(
+                allOf(withId(R.id.searched_item), withText("Koi Fish"),
+                        withParent(withParent(withId(R.id.search_list_items))),
+                        isDisplayed()));
+        textView.check(matches(withText("Koi Fish")));
 
         ViewInteraction appCompatImageView2 = onView(
                 allOf(withId(androidx.appcompat.R.id.search_close_btn), withContentDescription("Clear query"),
@@ -82,71 +86,82 @@ public class MainActivityTest {
                                                 1)),
                                 0),
                         isDisplayed()));
-        searchAutoComplete2.perform(replaceText("gator"), closeSoftKeyboard());
+        searchAutoComplete2.perform(replaceText("gor"), closeSoftKeyboard());
 
-        ViewInteraction materialButton = onView(
-                allOf(withId(R.id.add_exhibit_btn), withText("Add"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
+        ViewInteraction textView2 = onView(
+                allOf(withId(R.id.searched_item), withText("Gorillas"),
+                        withParent(withParent(withId(R.id.search_list_items))),
                         isDisplayed()));
-        materialButton.perform(click());
+        textView2.check(matches(withText("Gorillas")));
 
-        ViewInteraction materialButton2 = onView(
-                allOf(withId(R.id.plan_route_btn), withText("Plan"),
+        ViewInteraction appCompatImageView3 = onView(
+                allOf(withId(androidx.appcompat.R.id.search_close_btn), withContentDescription("Clear query"),
                         childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                4),
-                        isDisplayed()));
-        materialButton2.perform(click());
-
-        ViewInteraction materialButton3 = onView(
-                allOf(withId(R.id.next_btn), withText("Next"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
+                                allOf(withId(androidx.appcompat.R.id.search_plate),
+                                        childAtPosition(
+                                                withId(androidx.appcompat.R.id.search_edit_frame),
+                                                1)),
                                 1),
                         isDisplayed()));
-        materialButton3.perform(click());
+        appCompatImageView3.perform(click());
 
-        ViewInteraction materialTextView = onView(
-                allOf(withId(R.id.delete_btn), withText("X"),
+        ViewInteraction searchAutoComplete3 = onView(
+                allOf(withId(androidx.appcompat.R.id.search_src_text),
                         childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.search_list_items),
-                                        0),
+                                allOf(withId(androidx.appcompat.R.id.search_plate),
+                                        childAtPosition(
+                                                withId(androidx.appcompat.R.id.search_edit_frame),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete3.perform(click());
+
+        ViewInteraction searchAutoComplete4 = onView(
+                allOf(withId(androidx.appcompat.R.id.search_src_text),
+                        childAtPosition(
+                                allOf(withId(androidx.appcompat.R.id.search_plate),
+                                        childAtPosition(
+                                                withId(androidx.appcompat.R.id.search_edit_frame),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete4.perform(replaceText("bird"), closeSoftKeyboard());
+
+        ViewInteraction textView3 = onView(
+                allOf(withId(R.id.searched_item), withText("Flamingos"),
+                        withParent(withParent(withId(R.id.search_list_items))),
+                        isDisplayed()));
+        textView3.check(matches(withText("Flamingos")));
+
+        ViewInteraction textView4 = onView(
+                allOf(withId(R.id.searched_item), withText("Toucan"),
+                        withParent(withParent(withId(R.id.search_list_items))),
+                        isDisplayed()));
+        textView4.check(matches(withText("Toucan")));
+
+        ViewInteraction textView5 = onView(
+                allOf(withId(R.id.searched_item), withText("Blue Capped Motmot"),
+                        withParent(withParent(withId(R.id.search_list_items))),
+                        isDisplayed()));
+        textView5.check(matches(withText("Blue Capped Motmot")));
+
+        ViewInteraction textView6 = onView(
+                allOf(withId(R.id.searched_item), withText("Spoonbill"),
+                        withParent(withParent(withId(R.id.search_list_items))),
+                        isDisplayed()));
+        textView6.check(matches(withText("Spoonbill")));
+
+        ViewInteraction appCompatImageView4 = onView(
+                allOf(withId(androidx.appcompat.R.id.search_close_btn), withContentDescription("Clear query"),
+                        childAtPosition(
+                                allOf(withId(androidx.appcompat.R.id.search_plate),
+                                        childAtPosition(
+                                                withId(androidx.appcompat.R.id.search_edit_frame),
+                                                1)),
                                 1),
                         isDisplayed()));
-        materialTextView.perform(click());
-
-        ViewInteraction materialTextView2 = onView(
-                allOf(withId(R.id.delete_btn), withText("X"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.search_list_items),
-                                        0),
-                                1),
-                        isDisplayed()));
-        materialTextView2.perform(click());
-
-        ViewInteraction materialTextView3 = onView(
-                allOf(withId(R.id.delete_btn), withText("X"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.search_list_items),
-                                        0),
-                                1),
-                        isDisplayed()));
-        materialTextView3.perform(click());
-
+        appCompatImageView4.perform(click());
     }
-
-
 
     private static Matcher<View> childAtPosition(
             final Matcher<View> parentMatcher, final int position) {
@@ -167,4 +182,3 @@ public class MainActivityTest {
         };
     }
 }
-*/
