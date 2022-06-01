@@ -70,15 +70,15 @@ public class PlanRoute {
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g,
                 currLoc,
                 shortPaths.get(0).get(0));
-        String text = (currLoc + " to "
-                + shortPaths.get(0).get(0) + " is: " + path.getWeight() + " meters.\n\n");
+        String text = (vInfo.get(path.getStartVertex()).name + " to "
+                + vInfo.get(path.getEndVertex()).name + " is: " + path.getWeight() + " meters.\n\n");
         for(int i = 0; i < shortPaths.size(); i++) {
             path = DijkstraShortestPath.findPathBetween(g,
                     shortPaths.get(i).get(0),
                     shortPaths.get(i).get(1));
 
-            text += (shortPaths.get(i).get(0) + " to "
-                    + shortPaths.get(i).get(1) + " is: " + path.getWeight() + " meters.\n\n");
+            text += (vInfo.get(path.getStartVertex()).name + " to "
+                    + vInfo.get(path.getEndVertex()).name + " is: " + path.getWeight() + " meters.\n\n");
         }
 
         Log.d("plan_route", "make the compact list");
