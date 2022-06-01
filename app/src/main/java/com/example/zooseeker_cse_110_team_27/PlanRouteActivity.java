@@ -29,7 +29,6 @@ public class PlanRouteActivity extends AppCompatActivity{
     private EditText lat_et;
     private EditText lng_et;
     private Button relocateBtn;
-    private ArrayList<ArrayList<String>> shortPaths;
     private HashMap<String, Coord> coords;
 
     private PlanRoute pr;

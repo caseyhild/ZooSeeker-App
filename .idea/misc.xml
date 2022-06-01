@@ -3,6 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/School/CSE110/zooseeker/app/src/main/res/layout/activity_compact_list.xml" value="0.2015625" />
+        <entry key="..\:/School/CSE110/zooseeker/app/src/main/res/layout/activity_main.xml" value="0.2015625" />
+        <entry key="..\:/School/CSE110/zooseeker/app/src/main/res/layout/activity_maps.xml" value="0.2015625" />
+        <entry key="..\:/School/CSE110/zooseeker/app/src/main/res/layout/activity_plan_route.xml" value="0.2015625" />
+        <entry key="..\:/School/CSE110/zooseeker/app/src/main/res/layout/search_activity.xml" value="0.2015625" />
+        <entry key="..\:/School/CSE110/zooseeker/app/src/main/res/layout/search_item.xml" value="0.2015625" />
         <entry key="..\:/Users/ITSloaner/StudioProjects/zooseeker-cse-110-team-27/app/src/main/res/layout/activity_compact_list.xml" value="0.1359375" />
         <entry key="..\:/Users/ITSloaner/StudioProjects/zooseeker-cse-110-team-27/app/src/main/res/layout/activity_compact_route.xml" value="0.12916666666666668" />
         <entry key="..\:/Users/ITSloaner/StudioProjects/zooseeker-cse-110-team-27/app/src/main/res/layout/activity_main.xml" value="0.264" />
