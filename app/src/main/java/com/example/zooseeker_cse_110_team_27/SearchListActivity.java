@@ -53,6 +53,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     private Map<String,String> exhibitTagMap;
     private Map<String,String> selectedMap;
     private HashMap<String, Coord> coords;
+    public static boolean clearList;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         Log.d("search_list_activity", "start search list activity");
@@ -126,6 +127,13 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         this.clearButton = this.findViewById(R.id.clear_btn);
         clearButton.setOnClickListener(this::onClearClicked);
 
+        if(clearList) {
+            adapter.resetSelected();
+            updateExhibitList("");
+            populateSelectedMap();
+            Log.d("clear", "cleared");
+            clearList = false;
+        }
         Log.d("search_list_activity", "update texts, save selections, display");
 
         updateTextView();
@@ -209,7 +217,6 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
 
     private void onClearClicked(View view) {
         Log.d("search_list_activity", "clear button clicked");
-
         adapter.resetSelected();
         updateExhibitList("");
         populateDisplay();
