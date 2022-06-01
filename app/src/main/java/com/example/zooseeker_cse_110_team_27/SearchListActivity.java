@@ -57,7 +57,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     private HashMap<String, Coord> coords;
     @Override
     protected void onCreate(Bundle savedInstanceState){
-        Log.d("search_list_activity", "starting page");
+        Log.d("search_list_activity", "start search list activity");
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
