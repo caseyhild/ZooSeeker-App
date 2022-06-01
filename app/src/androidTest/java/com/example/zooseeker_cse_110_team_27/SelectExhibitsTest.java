@@ -47,6 +47,17 @@ public class SelectExhibitsTest {
         * when search matches a result, result is displayed in drop down search list
         * when search does not match anything, nothing is displayed
         * */
+
+        ViewInteraction matButton = onView(
+                allOf(withId(R.id.clear_btn), withText("Clear"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        matButton.perform(click());
+
         ViewInteraction linearLayout = onView(
                 allOf(withId(R.id.search_bar),
                         withParent(allOf(withId(R.id.search_bar),
@@ -276,6 +287,16 @@ public class SelectExhibitsTest {
                                 1),
                         isDisplayed()));
         appCompatImageView2.perform(click());
+
+        ViewInteraction materialButton10 = onView(
+                allOf(withId(R.id.clear_btn), withText("Clear"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        materialButton10.perform(click());
     }
 
     private static Matcher<View> childAtPosition(
