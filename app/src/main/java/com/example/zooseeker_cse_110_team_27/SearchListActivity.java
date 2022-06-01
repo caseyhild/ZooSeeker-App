@@ -170,6 +170,10 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     }
 
     private void onPlanClicked(View view) {
+        if (searchView.getQuery().length() != 0) {
+            return;
+        }
+
         Intent intent = new Intent(SearchListActivity.this, PlanRouteActivity.class);
         ArrayList<String> passExhibitNames = new ArrayList<>();
         intent.putExtra("coords", coords);
