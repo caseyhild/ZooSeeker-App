@@ -1,5 +1,7 @@
 package com.example.zooseeker_cse_110_team_27;
 
+import android.util.Log;
+
 import org.jgrapht.alg.util.Pair;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.nio.Attribute;
@@ -25,6 +27,7 @@ public class IdentifiedWeightedEdge extends DefaultWeightedEdge {
         String attrValue = attr.getValue();
 
         if (attrName.equals("id")) {
+            Log.d("IDWeightedEdge", "set ID for edge");
             edge.setId(attrValue);
         }
     }

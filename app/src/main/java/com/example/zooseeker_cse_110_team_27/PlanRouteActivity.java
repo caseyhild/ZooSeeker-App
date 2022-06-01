@@ -37,6 +37,8 @@ public class PlanRouteActivity extends AppCompatActivity{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("plan_route_activity", "route plan starting page");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan_route);
 
@@ -95,6 +97,8 @@ public class PlanRouteActivity extends AppCompatActivity{
     //when this happens, if the user press relocate? then it will change the exhibits to match the shortest path from
     //the user's location
     private void onRelocateClicked(View view) {
+        Log.d("plan_route_activity", "relocate clicked");
+
         String lat = lat_et.getText().toString();
         String lng = lng_et.getText().toString();
 
@@ -129,6 +133,8 @@ public class PlanRouteActivity extends AppCompatActivity{
     }
 
     private void updateNextButtonText() {
+        Log.d("plan_route_activity", "update next button");
+
         //if shortPaths has only 1 element then set the text of nextBtn to finish
         if (shortPaths.size()<2 && shortPaths.get(0).get(1).equals("entrance_exit_gate")) {
             nextBtn.setText("Finish");
@@ -139,7 +145,8 @@ public class PlanRouteActivity extends AppCompatActivity{
     }
 
     private void onCompactClicked(View view) {
-        //send data to the compactlistactivity to use the shortPaths
+        Log.d("plan_route_activity", "send data to the compactlistactivity to use the shortPaths");
+
         Intent i = new Intent(this, CompactListActivity.class);
 
         i.putExtra("shortPaths", shortPaths);
@@ -148,6 +155,8 @@ public class PlanRouteActivity extends AppCompatActivity{
     }
 
     private void onNextClicked(View view) {
+        Log.d("plan_route_activity", "next clicked");
+
         //when shortPaths doesnt have any more elements, finish the activity
         if (shortPaths.size() == 0) {
             finish();
@@ -173,6 +182,8 @@ public class PlanRouteActivity extends AppCompatActivity{
     }
 
     private void onBackClicked(View view) {
+        Log.d("plan_route_activity", "back clicked");
+
         //finish activity if at the beginning of the path
         String start = "entrance_exit_gate";
         if(!shortPaths.isEmpty()) {
@@ -213,6 +224,8 @@ public class PlanRouteActivity extends AppCompatActivity{
     }
 
     private void onSkipClicked(View view) {
+        Log.d("plan_route_activity", "skip clicked");
+
         ArrayList<String> tmp = new ArrayList<>();
         //ensure there is an exhibit to skip; else do nothing
 

@@ -19,6 +19,8 @@ public class ShowSelectedActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d("show_sel_activity", "starting page");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_show_selected);
 

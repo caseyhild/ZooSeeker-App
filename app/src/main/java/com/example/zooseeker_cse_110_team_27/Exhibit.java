@@ -1,6 +1,8 @@
 package com.example.zooseeker_cse_110_team_27;
 
 import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -56,6 +58,7 @@ public class Exhibit {
     }
 
     public static List<Exhibit> loadJSONForSearching(Context context, String path){
+        Log.d("exhibit", "loadJSON");
         try {
             InputStream inputStream = context.getAssets().open(path);
             Reader reader = new InputStreamReader(inputStream);
@@ -70,6 +73,7 @@ public class Exhibit {
     }
 
     public static Map<String, String> getIdMap(List<Exhibit> exhibits) {
+        Log.d("exhibit", "getID");
         Map<String, String> idMap = new HashMap<>();
         for (Exhibit exhibit : exhibits) {
             idMap.put(exhibit.name, exhibit.id);
@@ -79,6 +83,7 @@ public class Exhibit {
     }
 
     public static Map<String, String> getSearchMap(List<Exhibit> exhibits){
+        Log.d("exhibit", "getSearch");
         Map<String, String> exhibitTagMap = new HashMap<>();
         for (Exhibit exhibit: exhibits) {
             for (String tag: exhibit.tags ) {
@@ -89,6 +94,7 @@ public class Exhibit {
     }
 
     public static HashMap<String, Coord> getCoordMap(List<Exhibit> exhibits) {
+        Log.d("exhibit", "getCoord");
         HashMap<String, Coord> m = new HashMap<>();
         for (Exhibit e : exhibits) {
             Coord coord = new Coord(e.lat, e.lng);
