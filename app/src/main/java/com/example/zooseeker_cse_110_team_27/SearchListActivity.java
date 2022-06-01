@@ -56,6 +56,8 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     public static boolean clearList;
     @Override
     protected void onCreate(Bundle savedInstanceState){
+        Log.d("search_list_activity", "start search list activity");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_activity);
         gson = new Gson();
@@ -83,6 +85,8 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         coords = Exhibit.getCoordMap(exhibits);
 
         //load previous selected exhibits
+        Log.d("search_list_activity", "load previous selected exhibits");
+
         SharedPreferences sh = getSharedPreferences("SelectedPref", MODE_PRIVATE);
         String savedSelectedMap = sh.getString("map","empty");
         if(savedSelectedMap.equals("empty")) {
@@ -130,6 +134,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
             Log.d("clear", "cleared");
             clearList = false;
         }
+        Log.d("search_list_activity", "update texts, save selections, display");
 
         updateTextView();
         saveSelected();
@@ -137,6 +142,8 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     }
 
     private void showListClicked(View view) {
+        Log.d("search_list_activity", "show list");
+
         Intent i = new Intent(SearchListActivity.this, ShowSelectedActivity.class);
         ArrayList<String> passExhibitNames = new ArrayList<>();
 
@@ -179,6 +186,7 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     }
 
     private void onPlanClicked(View view) {
+        Log.d("search_list_activity", "plan button clicked");
         if (searchView.getQuery().length() != 0) {
             return;
         }
@@ -207,7 +215,8 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
         }
     }
 
-    public void onClearClicked(View view) {
+    private void onClearClicked(View view) {
+        Log.d("search_list_activity", "clear button clicked");
         adapter.resetSelected();
         updateExhibitList("");
         populateDisplay();
@@ -215,12 +224,16 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
 
     @Override
     public void updateTextView() {
+        Log.d("search_list_activity", "text view updated");
+
         String update = adapter.getSelected() + "";
         planRouteButton.setText("Plan: " + update);
         saveSelected();
     }
 
     public void getExhibitsinList(List<SearchListItem> exhibitList) {
+        Log.d("search_list_activity", "exhibits gotten");
+
         exhibitsinList = exhibitList;
     }
 
@@ -229,6 +242,8 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     }
 
     public void updateExhibitList(String filter) {
+        Log.d("search_list_activity", "update list of exhibits");
+
         displayedExhibits = new ArrayList<>();
         for(Exhibit e : exhibits) {
             Log.d("tag",e.name);
@@ -246,10 +261,15 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
                 }
             }
         }
+
+        Log.d("search_list_activity", "exhibit list saved");
+
         saveSelected();
     }
 
     public void populateDisplay() {
+        Log.d("search_list_activity", "clear the display");
+
         clearDisplay();
         for(int i = 0; i < displayedExhibits.size(); i++)
         {
@@ -262,16 +282,22 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
                     viewModel.createExhibit(e.name,false);
             }
         }
+        Log.d("search_list_activity", "update display texts");
+
         updateTextView();
     }
 
     public void populateSelectedMap() {
+        Log.d("search_list_activity", "put exhibits into the map");
+
         for(Exhibit e : exhibits) {
             selectedMap.put(e.name,"false");
         }
     }
 
     public void saveSelected() {
+        Log.d("search_list_activity", "save exhibits selected");
+
         for(SearchListItem s : adapter.getList()) {
             if(s.selected)
                 selectedMap.put(s.exhibitName, "true");

@@ -62,6 +62,7 @@ public class PlanRoute {
             newGoals.remove(goal);
         }
 
+        Log.d("plan_route", "make goals, apply dijkstra, find short path");
         return shortPaths;
     }
 
@@ -80,6 +81,7 @@ public class PlanRoute {
                     + shortPaths.get(i).get(1) + " is: " + path.getWeight() + " meters.\n\n");
         }
 
+        Log.d("plan_route", "make the compact list");
         return text;
     }
 
@@ -138,6 +140,7 @@ public class PlanRoute {
 
         shortPaths.remove(0);
 
+        Log.d("plan_route", "find the shortest path");
         return ap;
     }
 
@@ -145,6 +148,7 @@ public class PlanRoute {
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g,
                 shortPaths.get(1).get(0),
                 shortPaths.get(1).get(1));
+        Log.d("plan_route", "get exhibit name");
         return vInfo.get(path.getStartVertex()).name;
     }
   
@@ -169,6 +173,7 @@ public class PlanRoute {
             }
         }
 
+        Log.d("plan_route", "off route");
         return tempStr;
     }
 
@@ -183,6 +188,8 @@ public class PlanRoute {
 
         double d_ft = Math.sqrt(Math.pow(d_ft_h,2) + Math.pow(d_ft_v,2));
         double tempWeight = BASE * Math.ceil(d_ft/ BASE);
+
+        Log.d("plan_route", "calculate distance for coordinate points");
         return tempWeight;
     }
 

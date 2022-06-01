@@ -3,6 +3,7 @@ package com.example.zooseeker_cse_110_team_27;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,7 +32,7 @@ public class CompactListActivity extends AppCompatActivity{
         returnBtn = findViewById(R.id.return_btn);
         returnBtn.setOnClickListener(this::onReturnClicked);
 
-        //append to the textview with the shortest paths
+        Log.d("compact_list","append to the textview with the shortest paths");
         if (shortPaths.size() == 0) {
             compactTv.append("No more exhibits!");
         }
