@@ -12,6 +12,7 @@ import java.util.List;
 
 public class CompactListActivity extends AppCompatActivity{
     ArrayList<ArrayList<String>> shortPaths;
+    String currLoc;
     TextView compactTv;
     Button returnBtn;
 
@@ -23,6 +24,7 @@ public class CompactListActivity extends AppCompatActivity{
 
         compactTv = findViewById(R.id.compactlist_tv);
         shortPaths = (ArrayList<ArrayList<String>>) getIntent().getSerializableExtra("shortPaths");
+        currLoc = (String) getIntent().getSerializableExtra("currLoc");
 
         PlanRoute pr = new PlanRoute(this);
 
@@ -34,7 +36,7 @@ public class CompactListActivity extends AppCompatActivity{
             compactTv.append("No more exhibits!");
         }
         else
-            compactTv.append(pr.setCompactList(shortPaths));
+            compactTv.append(pr.setCompactList(shortPaths, currLoc));
     }
 
     private void onReturnClicked(View view) {

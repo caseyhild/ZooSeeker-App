@@ -21,6 +21,7 @@ import java.util.HashMap;
 public class PlanRouteActivity extends AppCompatActivity{
     private TextView tv;
     private Button nextBtn;
+    private Button clearBtn;
     private Button compactBtn;
     private Button skipBtn;
     private Button backBtn;
@@ -34,6 +35,7 @@ public class PlanRouteActivity extends AppCompatActivity{
     private HashMap<String, Coord> coords;
     private CheckBox brief_directions;
     private boolean isBrief;
+    private String currentLocation;
 
     private PlanRoute pr;
 
@@ -48,6 +50,8 @@ public class PlanRouteActivity extends AppCompatActivity{
         goals = (ArrayList<String>) getIntent().getSerializableExtra("key");
         originalGoals = new ArrayList<>(goals);
         coords = (HashMap<String, Coord>) getIntent().getSerializableExtra("coords");
+
+        currentLocation = "entrance_exit_gate";
 
         isBrief = false;
         brief_directions = findViewById(R.id.brief_directions);
@@ -73,6 +77,10 @@ public class PlanRouteActivity extends AppCompatActivity{
 
         nextBtn = findViewById(R.id.next_btn);
         nextBtn.setOnClickListener(this::onNextClicked);
+
+
+        clearBtn = findViewById(R.id.clear_btn);
+        clearBtn.setOnClickListener(this::onClearClicked);
 
         compactBtn = findViewById(R.id.compact_btn);
         compactBtn.setOnClickListener(this::onCompactClicked);
@@ -154,11 +162,21 @@ public class PlanRouteActivity extends AppCompatActivity{
         }
     }
 
+    private void onClearClicked(View view) {
+        //clear all selected exhibits and return to that page
+        Intent i = new Intent(this, SearchListActivity.class);
+
+        SearchListActivity.clearList = true;
+
+        startActivity(i);
+    }
+
     private void onCompactClicked(View view) {
         //send data to the compactlistactivity to use the shortPaths
         Intent i = new Intent(this, CompactListActivity.class);
 
         i.putExtra("shortPaths", shortPaths);
+        i.putExtra("currLoc", currentLocation);
 
         startActivity(i);
     }
@@ -185,6 +203,7 @@ public class PlanRouteActivity extends AppCompatActivity{
         //relocate
         //the user would now be at gorillas
         //they would then go to crocidiles next, and remove gorillas from the list
+        currentLocation = shortPaths.get(0).get(0);
         tv.setText(pr.setShortestPath(shortPaths, goals, true, isBrief));
     }
 
