@@ -84,7 +84,24 @@ public class PlanRoute {
         return text;
     }
 
-    String setShortestPath(ArrayList<ArrayList<String>> shortPaths, ArrayList<String> goals, boolean check) {
+    String setShortestPath(ArrayList<ArrayList<String>> shortPaths, ArrayList<String> goals, boolean check, boolean brief) {
+        String ap = updateShortestPath(shortPaths, goals, check, brief);
+
+        GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g,
+                shortPaths.get(0).get(0),
+                shortPaths.get(0).get(1));
+
+        //check if the user is clicking this function when AFTER viewing an exhibit
+        if (check) {
+            goals.remove(path.getStartVertex());
+        }
+
+        shortPaths.remove(0);
+
+        return ap;
+    }
+
+    String updateShortestPath(ArrayList<ArrayList<String>> shortPaths, ArrayList<String> goals, boolean check, boolean brief) {
         String ap = new String();
 
         GraphPath<String, IdentifiedWeightedEdge> path = DijkstraShortestPath.findPathBetween(g,
@@ -96,28 +113,35 @@ public class PlanRoute {
 
         int i = 1;
         String currExhibit = shortPaths.get(0).get(0);
+        String previousStreet = "";
+        int previousDistance = 0;
+        int briefCounter = 1;
         for (IdentifiedWeightedEdge e : path.getEdgeList()) {
             ZooData.VertexInfo edgeSource = vInfo.get(g.getEdgeSource(e));
             ZooData.VertexInfo edgeTarget = vInfo.get(g.getEdgeTarget(e));
-
-            ap += (i + ". Walk " + g.getEdgeWeight(e) + " meters along " + eInfo.get(e.getId()).street + " from ");
+            if(!brief)
+                ap += (i + ". Walk " + (g.getEdgeWeight(e) + previousDistance) + " meters along " + eInfo.get(e.getId()).street + " from ");
+            else if(!eInfo.get(e.getId()).street.equals(previousStreet))
+                ap += (briefCounter + ". Walk " + (g.getEdgeWeight(e) + previousDistance) + " meters along " + eInfo.get(e.getId()).street + " from ");
 
             if (currExhibit.equals(edgeSource.id)) {
-                ap += (edgeSource.name + " to " + edgeTarget.name + ".\n\n");
+                if(!brief || !eInfo.get(e.getId()).street.equals(previousStreet))
+                    ap += (edgeSource.name + " to " + edgeTarget.name + ".\n\n");
                 currExhibit = edgeTarget.id;
             } else {
-                ap += (edgeTarget.name + " to " + edgeSource.name + ".\n\n");
+                if(!brief || !eInfo.get(e.getId()).street.equals(previousStreet))
+                    ap += (edgeTarget.name + " to " + edgeSource.name + ".\n\n");
                 currExhibit = edgeSource.id;
             }
+            if(!brief || !eInfo.get(e.getId()).street.equals(previousStreet)) {
+                briefCounter++;
+                previousDistance = 0;
+            }
+            else
+                previousDistance += g.getEdgeWeight(e);
+            previousStreet = eInfo.get(e.getId()).street;
             i++;
         }
-
-        //check if the user is clicking this function when AFTER viewing an exhibit
-        if (check == true) {
-            goals.remove(path.getStartVertex());
-        }
-
-        shortPaths.remove(0);
 
         return ap;
     }

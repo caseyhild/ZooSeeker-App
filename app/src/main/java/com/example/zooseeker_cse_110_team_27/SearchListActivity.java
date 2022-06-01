@@ -45,13 +45,11 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
     private Button clearButton;
     private Button planRouteButton;
     private Button showListButton;
-    private TextView deleteButton;
     private ArrayList<Exhibit> exhibits;
     private ArrayList<Exhibit> displayedExhibits;
     private List<SearchListItem> exhibitsinList;
     private Map<String, String> exhibitIdMap;
     private SearchListAdapter adapter;
-    private TextView numExhibits;
     private Map<String,String> exhibitTagMap;
     private Map<String,String> selectedMap;
     private HashMap<String, Coord> coords;
@@ -68,7 +66,6 @@ public class SearchListActivity extends AppCompatActivity implements SearchListA
             String query = intent.getStringExtra(SearchManager.QUERY);
             doMySearch(query);
         }
-
 
         //setup
         adapter = new SearchListAdapter(this);

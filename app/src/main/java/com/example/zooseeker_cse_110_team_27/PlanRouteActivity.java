@@ -9,6 +9,7 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -31,6 +32,8 @@ public class PlanRouteActivity extends AppCompatActivity{
     private EditText lng_et;
     private Button relocateBtn;
     private HashMap<String, Coord> coords;
+    private CheckBox brief_directions;
+    private boolean isBrief;
 
     private PlanRoute pr;
 
@@ -45,6 +48,19 @@ public class PlanRouteActivity extends AppCompatActivity{
         goals = (ArrayList<String>) getIntent().getSerializableExtra("key");
         originalGoals = new ArrayList<>(goals);
         coords = (HashMap<String, Coord>) getIntent().getSerializableExtra("coords");
+
+        isBrief = false;
+        brief_directions = findViewById(R.id.brief_directions);
+        brief_directions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBriefDirectionsChecked();
+                Log.d("brief", "Shortest path: " + shortPaths.toString());
+                tv.setText(pr.setShortestPath(shortPaths, goals, false, isBrief));
+                Log.d("brief", "Shortest path: " + shortPaths.toString());
+                Log.d("brief", "Brief Directions = " + isBrief);
+            }
+        });
 
         lat_et = findViewById(R.id.lat_et);
         lng_et = findViewById(R.id.lng_et);
@@ -87,7 +103,7 @@ public class PlanRouteActivity extends AppCompatActivity{
         //only when we click next on the next exhibit, would we remove it
         //so test case: entrance->flamingos, then click next, flamingos->monkeys, remove flamingos from the list
         //goals: [flamingos, monkeys] -> [monkeys]
-        tv.setText(pr.setShortestPath(shortPaths, goals, false));
+        tv.setText(pr.setShortestPath(shortPaths, goals, false, isBrief));
     }
 
     //if the user wants to relocate, it will first relocate
@@ -119,7 +135,7 @@ public class PlanRouteActivity extends AppCompatActivity{
 
 
             Log.d("debuggg",shortPaths.toString());
-            tv.setText(pr.setShortestPath(shortPaths, goals, true));
+            tv.setText(pr.setShortestPath(shortPaths, goals, true, isBrief));
             Log.d("debuggg",shortPaths.toString());
             relocateBtn.setText("Change Location");
         } else if (pr.getTempWeight(p1, coords.get(shortPaths.get(0).get(0))) > 500) {
@@ -169,7 +185,7 @@ public class PlanRouteActivity extends AppCompatActivity{
         //relocate
         //the user would now be at gorillas
         //they would then go to crocidiles next, and remove gorillas from the list
-        tv.setText(pr.setShortestPath(shortPaths, goals, true));
+        tv.setText(pr.setShortestPath(shortPaths, goals, true, isBrief));
     }
 
     private void onBackClicked(View view) {
@@ -208,7 +224,7 @@ public class PlanRouteActivity extends AppCompatActivity{
             }
             //update texts and path
             updateNextButtonText();
-            tv.setText(pr.setShortestPath(shortPaths, goals, false));
+            tv.setText(pr.setShortestPath(shortPaths, goals, false, isBrief));
         }
     }
 
@@ -245,8 +261,25 @@ public class PlanRouteActivity extends AppCompatActivity{
             originalPaths.add(temp);
 
 
-            tv.setText(pr.setShortestPath(shortPaths, goals, false));
+            tv.setText(pr.setShortestPath(shortPaths, goals, false, isBrief));
         }
     }
 
+    private void onBriefDirectionsChecked() {
+        if(brief_directions.isChecked())
+            isBrief = true;
+        else
+            isBrief = false;
+
+        if (shortPaths.isEmpty())
+            shortPaths.add(0, originalPaths.get(originalPaths.size() - 1));
+        else {
+            for (int i = 1; i < originalPaths.size(); i++) {
+                if (shortPaths.get(0).equals(originalPaths.get(i))) {
+                    shortPaths.add(0, originalPaths.get(i - 1));
+                    break;
+                }
+            }
+        }
+    }
 }
