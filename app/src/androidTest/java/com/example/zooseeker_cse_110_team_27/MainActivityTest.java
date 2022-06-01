@@ -1,6 +1,7 @@
 package com.example.zooseeker_cse_110_team_27;
 
-
+// OLD TEST | MS 1
+/*
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
@@ -120,7 +121,7 @@ public class MainActivityTest {
                                 1),
                         isDisplayed()));
         materialTextView.perform(click());
-/*
+
         ViewInteraction materialTextView2 = onView(
                 allOf(withId(R.id.delete_btn), withText("X"),
                         childAtPosition(
@@ -140,7 +141,7 @@ public class MainActivityTest {
                                 1),
                         isDisplayed()));
         materialTextView3.perform(click());
-        */
+
     }
 
     private static Matcher<View> childAtPosition(
@@ -162,3 +163,4 @@ public class MainActivityTest {
         };
     }
 }
+*/
