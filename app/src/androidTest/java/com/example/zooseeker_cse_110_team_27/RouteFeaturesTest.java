@@ -5,12 +5,10 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withParent;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.not;
 
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,25 +22,36 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class RouteTest {
+public class RouteFeaturesTest {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void routeTest() {
+    public void routeFeaturesTest() {
         /* TESTS
          * when user goes back from the first exhibit route displayed, returns to search page
          * when user reaches the route to the last exhibit (utilizing either skip or next) and then views the list of exhibits
          * the app displays "No more exhibits!" instead.
          * then the user can return to the directions (and continue their navigation)
          * */
+        ViewInteraction matButton = onView(
+                allOf(withId(R.id.clear_btn), withText("Clear"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        matButton.perform(click());
+
         ViewInteraction materialCheckBox = onView(
                 allOf(withId(R.id.checkBox),
                         childAtPosition(
@@ -89,16 +98,16 @@ public class RouteTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                4),
+                                5),
                         isDisplayed()));
         materialButton2.perform(click());
 
-        ViewInteraction imageView = onView(
-                allOf(withId(androidx.appcompat.R.id.search_button), withContentDescription("Search"),
+        ViewInteraction linearLayout = onView(
+                allOf(withId(R.id.search_bar),
                         withParent(allOf(withId(R.id.search_bar),
-                                withParent(withId(R.id.search_bar)))),
+                                withParent(IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class)))),
                         isDisplayed()));
-        imageView.check(matches(isDisplayed()));
+        linearLayout.check(matches(isDisplayed()));
 
         ViewInteraction materialButton3 = onView(
                 allOf(withId(R.id.plan_route_btn), withText("Plan: 3"),
@@ -110,29 +119,23 @@ public class RouteTest {
                         isDisplayed()));
         materialButton3.perform(click());
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.compact_btn), withText("SEE LIST"),
-                        withParent(withParent(withId(android.R.id.content))),
-                        isDisplayed()));
-        button.check(matches(isDisplayed()));
-
         ViewInteraction materialButton4 = onView(
+                allOf(withId(R.id.skip_btn), withText("Skip"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                4),
+                        isDisplayed()));
+        materialButton4.perform(click());
+
+        ViewInteraction materialButton5 = onView(
                 allOf(withId(R.id.next_btn), withText("Next"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 1),
-                        isDisplayed()));
-        materialButton4.perform(click());
-
-        ViewInteraction materialButton5 = onView(
-                allOf(withId(R.id.skip_btn), withText("Skip"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
                         isDisplayed()));
         materialButton5.perform(click());
 
@@ -152,7 +155,7 @@ public class RouteTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                3),
                         isDisplayed()));
         materialButton7.perform(click());
 
@@ -171,6 +174,16 @@ public class RouteTest {
                                 1),
                         isDisplayed()));
         materialButton8.perform(click());
+
+        ViewInteraction materialButton9 = onView(
+                allOf(withId(R.id.clear_btn), withText("Clear"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                2),
+                        isDisplayed()));
+        materialButton9.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

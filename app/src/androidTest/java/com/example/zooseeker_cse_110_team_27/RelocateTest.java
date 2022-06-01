@@ -42,19 +42,48 @@ public class RelocateTest {
          * when latitude and longitude are changed, and change location is pressed
          * the button "relocate?" appears and the change location button disappears
          * */
+        ViewInteraction matButton = onView(
+                allOf(withId(R.id.clear_btn), withText("Clear"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        matButton.perform(click());
 
         ViewInteraction materialCheckBox = onView(
                 allOf(withId(R.id.checkBox),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.search_list_items),
-                                        2),
+                                        1),
                                 1),
                         isDisplayed()));
         materialCheckBox.perform(click());
 
+        ViewInteraction materialCheckBox2 = onView(
+                allOf(withId(R.id.checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.search_list_items),
+                                        3),
+                                1),
+                        isDisplayed()));
+        materialCheckBox2.perform(click());
+
+        ViewInteraction materialCheckBox3 = onView(
+                allOf(withId(R.id.checkBox),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(R.id.search_list_items),
+                                        4),
+                                1),
+                        isDisplayed()));
+        materialCheckBox3.perform(click());
+
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id.plan_route_btn), withText("Plan: 1"),
+                allOf(withId(R.id.plan_route_btn), withText("Plan: 3"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -69,19 +98,39 @@ public class RelocateTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                6),
+                                7),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("385"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("256"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.lng_et),
+                allOf(withId(R.id.lat_et), withText("256"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 7),
                         isDisplayed()));
-        appCompatEditText2.perform(replaceText("324"), closeSoftKeyboard());
+        appCompatEditText2.perform(pressImeActionButton());
+
+        ViewInteraction appCompatEditText3 = onView(
+                allOf(withId(R.id.lng_et),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                8),
+                        isDisplayed()));
+        appCompatEditText3.perform(replaceText("552"), closeSoftKeyboard());
+
+        ViewInteraction appCompatEditText4 = onView(
+                allOf(withId(R.id.lng_et), withText("552"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                8),
+                        isDisplayed()));
+        appCompatEditText4.perform(pressImeActionButton());
 
         ViewInteraction materialButton2 = onView(
                 allOf(withId(R.id.relocate_btn), withText("Change Location"),
@@ -89,7 +138,7 @@ public class RelocateTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton2.perform(click());
 
@@ -98,6 +147,26 @@ public class RelocateTest {
                         withParent(withParent(withId(android.R.id.content))),
                         isDisplayed()));
         button.check(matches(isDisplayed()));
+
+        ViewInteraction materialButton3 = onView(
+                allOf(withId(R.id.back_btn), withText("Back"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        materialButton3.perform(click());
+
+        ViewInteraction materialButton4 = onView(
+                allOf(withId(R.id.clear_btn), withText("Clear"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        materialButton4.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

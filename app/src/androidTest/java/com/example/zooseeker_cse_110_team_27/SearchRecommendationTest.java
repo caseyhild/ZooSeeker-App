@@ -38,6 +38,16 @@ public class SearchRecommendationTest {
 
     @Test
     public void searchRecommendationTest() {
+        ViewInteraction matButton = onView(
+                allOf(withId(R.id.clear_btn), withText("Clear"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        matButton.perform(click());
+
         ViewInteraction appCompatImageView = onView(
                 allOf(withId(androidx.appcompat.R.id.search_button), withContentDescription("Search"),
                         childAtPosition(
@@ -161,6 +171,16 @@ public class SearchRecommendationTest {
                                 1),
                         isDisplayed()));
         appCompatImageView4.perform(click());
+
+        ViewInteraction materialButton = onView(
+                allOf(withId(R.id.clear_btn), withText("Clear"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                5),
+                        isDisplayed()));
+        materialButton.perform(click());
     }
 
     private static Matcher<View> childAtPosition(
