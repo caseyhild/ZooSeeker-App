@@ -1,3 +1,3 @@
 # Zooseeker App
-CSE 110 Team 27<br>
+UC San Diego CSE 110<br>
 Casey Hild, Cynthia Gao, Joseph Dang, Thomas Alden, Trevor Tran, Wesley Zhang
