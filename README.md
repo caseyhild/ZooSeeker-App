@@ -1,5 +1,5 @@
-    # zooseeker-cse-110-team-27
-zooseeker-cse-110-team-27 created by GitHub Classroom
+# Zooseeker App
+CSE 110 Team 27
 Casey Hild
 Cynthia Gao
 Joseph Dang
